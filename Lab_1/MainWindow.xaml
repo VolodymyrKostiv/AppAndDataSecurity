@@ -1,0 +1,18 @@
+﻿<mah:MetroWindow x:Class="Lab_1.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:viewModels1="clr-namespace:Lab_1.ViewModels"
+                 Title="Lab_1"
+                 Width="1200"
+                 Height="750"
+                 mc:Ignorable="d">
+    <Window.DataContext>
+        <viewModels1:MainWindowViewModel />
+    </Window.DataContext>
+    <Grid>
+        <ContentPresenter Content="{Binding CurrentViewModel}" />
+    </Grid>
+</mah:MetroWindow>
