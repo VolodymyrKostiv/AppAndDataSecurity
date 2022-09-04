@@ -82,6 +82,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Business\Digest.cs" />
+    <Compile Include="Business\MD5.cs" />
+    <Compile Include="Business\RoundFunctions.cs" />
+    <Compile Include="Business\StepFunctions.cs" />
+    <Compile Include="Constants\BitConstants.cs" />
+    <Compile Include="Helpers\BitsHelper.cs" />
+    <Compile Include="Constants\MD5Constants.cs" />
     <Compile Include="ViewModels\HomeScreenViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\AnotherScreen.xaml.cs">
@@ -138,9 +145,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\CommonWPF\CommonWPF.csproj">
       <Project>{8319eb50-f6be-4050-bdc5-d541a8e1df40}</Project>

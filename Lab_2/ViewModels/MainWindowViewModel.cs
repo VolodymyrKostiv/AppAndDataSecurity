@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Lab_2.ViewModels
 {
-    class MainWindowViewModel : ChangeNotifier, IChangeViewModel
+    internal class MainWindowViewModel : ChangeNotifier, IChangeViewModel
     {
         BaseViewModel _currentViewModel;
         Stack<BaseViewModel> _viewModels;
