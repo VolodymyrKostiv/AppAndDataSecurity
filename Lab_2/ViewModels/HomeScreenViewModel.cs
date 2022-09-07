@@ -148,10 +148,8 @@ namespace Lab_2.ViewModels
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog()
             {
-                Filter = "Text file (*.txt)|*.txt",
                 Title = "Save hashed string",
-                AddExtension = true,
-                InitialDirectory = @"D:\University\Term 7\Security\Labs\TestFiles\Lab_2\OutputFiles",
+                InitialDirectory = @"D:\Program Files (x86)\Origin Games\Battlefield 1",
             };
 
             if (saveFileDialog.ShowDialog() == true)
@@ -167,7 +165,7 @@ namespace Lab_2.ViewModels
 
         private async void OpenFileExplorer()
         {
-            System.Diagnostics.Process.Start("explorer.exe", @"D:\University\Term 7\Security\Labs\TestFiles\Lab_2");
+            System.Diagnostics.Process.Start("explorer.exe", @"D:\Program Files (x86)\Origin Games\Battlefield 1");
         }
 
 
@@ -177,20 +175,47 @@ namespace Lab_2.ViewModels
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Title = "Choose file with string to hash",
-                Filter = "Text file (*.txt)|*.txt",
-                InitialDirectory = @"D:\University\Term 7\Security\Labs\TestFiles\Lab_2\InputFiles",
+                InitialDirectory = @"D:\Program Files (x86)\Origin Games\Battlefield 1",
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                var result = File.ReadAllText(openFileDialog.FileName);
+                string res = "";
+                try
+                {
+                    using (FileStream fsSource = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        byte[] bytes = new byte[fsSource.Length];
+                        int numBytesToRead = (int)fsSource.Length;
+                        int numBytesRead = 0;
+
+                        while (numBytesToRead > 0)
+                        {
+                            // Read may return anything from 0 to numBytesToRead.
+                            int n = fsSource.Read(bytes, numBytesRead, numBytesToRead);
+
+                            // Break when the end of the file is reached.
+                            if (n == 0)
+                                break;
+
+                            numBytesRead += n;
+                            numBytesToRead -= n;
+                        }
+
+                        numBytesToRead = bytes.Length;
+                        res = _md5.HashArray(bytes);
+                    }
+                }
+                catch (FileNotFoundException ioEx)
+                {
+                }
 
                 if (DisplayFileInput)
                 {
-                    StringToHash = result;
+                    StringToHash = res;
                 }
                 else
                 {
-                    HashedString = _md5.HashString(result);
+                    HashedString = res;
                 }
             }
         }
@@ -201,14 +226,41 @@ namespace Lab_2.ViewModels
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Title = "Choose file to check it's integrity",
-                Filter = "Text file (*.txt)|*.txt",
-                InitialDirectory = @"D:\University\Term 7\Security\Labs\TestFiles\Lab_2\ToCheck",
+                InitialDirectory = @"D:\Program Files (x86)\Origin Games\Battlefield 1",
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                var result = File.ReadAllText(openFileDialog.FileName);
-                TestFileMessage = result;
-                TestFileMessageHex = _md5.HashString(result);
+                string res = "";
+                try
+                {
+                    using (FileStream fsSource = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        byte[] bytes = new byte[fsSource.Length];
+                        int numBytesToRead = (int)fsSource.Length;
+                        int numBytesRead = 0;
+
+                        while (numBytesToRead > 0)
+                        {
+                            // Read may return anything from 0 to numBytesToRead.
+                            int n = fsSource.Read(bytes, numBytesRead, numBytesToRead);
+
+                            // Break when the end of the file is reached.
+                            if (n == 0)
+                                break;
+
+                            numBytesRead += n;
+                            numBytesToRead -= n;
+                        }
+
+                        numBytesToRead = bytes.Length;
+                        res = _md5.HashArray(bytes);
+                    }
+                }
+                catch (FileNotFoundException ioEx)
+                {
+                }
+
+                TestFileMessageHex = res;
             }
         }
 
@@ -218,13 +270,13 @@ namespace Lab_2.ViewModels
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Title = "Choose file with hex",
-                Filter = "Text file (*.txt)|*.txt",
-                InitialDirectory = @"D:\University\Term 7\Security\Labs\TestFiles\Lab_2\ToCheck",
+                InitialDirectory = @"D:\Program Files (x86)\Origin Games\Battlefield 1",
             };
             if (openFileDialog.ShowDialog() == true)
             {
                 var result = File.ReadAllText(openFileDialog.FileName);
-                TestFileHex = result;
+                var subres = result.Substring(0, 32);
+                TestFileHex = subres;
             }
         }
 

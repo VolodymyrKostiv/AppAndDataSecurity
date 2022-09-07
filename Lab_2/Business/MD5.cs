@@ -22,6 +22,13 @@ namespace Lab_2.Business
             return hash.ToString();
         }
 
+        public string HashArray(byte[] arr)
+        {
+            var byteMessage = CalculateMD5(arr);
+
+            return byteMessage.ToString();
+        }
+
         private Digest CalculateMD5(byte[] message)
         {
             Hash = new Digest();
