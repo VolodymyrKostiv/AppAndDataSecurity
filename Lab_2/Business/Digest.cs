@@ -30,35 +30,6 @@ namespace Lab_2.Business
 
         #region methods
 
-        public Byte[] ToByteArray()
-        {
-            return ConcatArrays(
-                BitConverter.GetBytes(A),
-                BitConverter.GetBytes(B),
-                BitConverter.GetBytes(C),
-                BitConverter.GetBytes(D));
-        }
-
-        public static T[] ConcatArrays<T>(params T[][] arrays)
-        {
-            var position = 0;
-            var outputArray = new T[arrays.Sum(a => a.Length)];
-
-            foreach (var a in arrays)
-            {
-                Array.Copy(a, 0, outputArray, position, a.Length);
-                position += a.Length;
-            }
-
-            return outputArray;
-        }
-
-
-        public Digest Clone()
-        {
-            return MemberwiseClone() as Digest;
-        }
-
         public void IterationSwap(uint F, uint[] X, uint i, uint k)
         {
             var tempD = D;
@@ -68,20 +39,17 @@ namespace Lab_2.Business
             A = tempD;
         }
 
-        public override string ToString()
-        {
-            return $"{ToByteString(A)}{ToByteString(B)}{ToByteString(C)}{ToByteString(D)}";
-        }
-
-        public override int GetHashCode()
-        {
-            return ToString().GetHashCode();
-        }
+        #region overrides
 
         public override bool Equals(object value)
         {
             return value is Digest md
                 && (GetHashCode() == md.GetHashCode() || ToString() == md.ToString());
+        }
+
+        public Digest Clone()
+        {
+            return MemberwiseClone() as Digest;
         }
 
         public static Digest operator +(Digest left, Digest right)
@@ -95,10 +63,22 @@ namespace Lab_2.Business
             };
         }
 
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return $"{ToByteString(A)}{ToByteString(B)}{ToByteString(C)}{ToByteString(D)}";
+        }
+
         private static string ToByteString(uint x)
         {
             return string.Join(string.Empty, BitConverter.GetBytes(x).Select(y => y.ToString("x2")));
         }
+
+        #endregion overrides
 
         #endregion methods
     }

@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lab2", "Lab2", "{1710D8F6-8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab_2", "Lab_2\Lab_2.csproj", "{A9548807-B980-4611-80D1-DE4F8899B645}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashingAlgorithmTests", "HashingAlgorithmTests\HashingAlgorithmTests.csproj", "{642C91C0-0E38-42D1-904D-DBC13092E779}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,14 @@ Global
 		{A9548807-B980-4611-80D1-DE4F8899B645}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9548807-B980-4611-80D1-DE4F8899B645}.Release|x64.ActiveCfg = Release|Any CPU
 		{A9548807-B980-4611-80D1-DE4F8899B645}.Release|x64.Build.0 = Release|Any CPU
+		{642C91C0-0E38-42D1-904D-DBC13092E779}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{642C91C0-0E38-42D1-904D-DBC13092E779}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{642C91C0-0E38-42D1-904D-DBC13092E779}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{642C91C0-0E38-42D1-904D-DBC13092E779}.Debug|x64.Build.0 = Debug|Any CPU
+		{642C91C0-0E38-42D1-904D-DBC13092E779}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{642C91C0-0E38-42D1-904D-DBC13092E779}.Release|Any CPU.Build.0 = Release|Any CPU
+		{642C91C0-0E38-42D1-904D-DBC13092E779}.Release|x64.ActiveCfg = Release|Any CPU
+		{642C91C0-0E38-42D1-904D-DBC13092E779}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +62,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A6F5EF7B-152C-4FFB-9FD3-F781B6EC78DA} = {65746073-24C4-45C8-9998-D6EE5D7FDC06}
 		{A9548807-B980-4611-80D1-DE4F8899B645} = {1710D8F6-804F-4508-B808-9EC415664958}
+		{642C91C0-0E38-42D1-904D-DBC13092E779} = {1710D8F6-804F-4508-B808-9EC415664958}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B123A6AA-E889-4716-A666-138D7DC0C7AB}

@@ -1,5 +1,4 @@
 ﻿using Lab_2.Constants;
-using System;
 using System.Text;
 
 namespace Lab_2.Business
@@ -15,7 +14,7 @@ namespace Lab_2.Business
 
         public string HashString(string message)
         {
-            var encoding = Encoding.ASCII;
+            var encoding = Encoding.UTF8;
             var byteMessage = encoding.GetBytes(message);
 
             var hash = CalculateMD5(byteMessage);
@@ -50,7 +49,7 @@ namespace Lab_2.Business
 
             uint sizeMsgBuff = inputMessageLength + (pad / BitConstants.BitsPerByte) + MD5Constants.MessageMaxSize;
             ulong sizeMsg = inputMessageLength * BitConstants.BitsPerByte;
-            
+
             byte[] bMsg = new byte[sizeMsgBuff];
 
             for (uint i = 0; i < inputMessageLength; i++)
@@ -92,10 +91,10 @@ namespace Lab_2.Business
                 var j = messageStartIndex + i;
 
                 extractedArray[i / BitConstants.BytesPer32BitWord] =
-                      message[j]                                                  
-                    | (((UInt32)message[j + 1]) << ((Int32)BitConstants.BitsPerByte * 1))  
-                    | (((UInt32)message[j + 2]) << ((Int32)BitConstants.BitsPerByte * 2)) 
-                    | (((UInt32)message[j + 3]) << ((Int32)BitConstants.BitsPerByte * 3));
+                      message[j]
+                    | (((uint)message[j + 1]) << ((int)BitConstants.BitsPerByte * 1))
+                    | (((uint)message[j + 2]) << ((int)BitConstants.BitsPerByte * 2))
+                    | (((uint)message[j + 3]) << ((int)BitConstants.BitsPerByte * 3));
             }
 
             return extractedArray;
@@ -114,5 +113,55 @@ namespace Lab_2.Business
 
             Hash += MDq;
         }
+
+        #region bad ideas
+        //internal async Task<Digest> HashFileAsync(string filePath)
+        //{
+        //    Hash = new Digest();
+
+        //    using (var filestream = File.OpenRead(filePath))
+        //    {
+        //        ulong totalBytesRead = 0;
+        //        int currentBytesRead = 0;
+        //        bool fileEnd = false;
+
+        //        do
+        //        {
+        //            var chunk = new byte[10_000];
+
+        //            currentBytesRead = await filestream.ReadAsync(chunk, 0, chunk.Length);
+        //            totalBytesRead += (ulong)currentBytesRead;
+
+        //            if (currentBytesRead < chunk.Length)
+        //            {
+        //                byte[] lastChunk = null;
+
+        //                if (currentBytesRead == 0)
+        //                {
+        //                    //lastChunk = ;
+        //                }
+        //                else
+        //                {
+        //                    lastChunk = new byte[currentBytesRead];
+        //                    Array.Copy(chunk, lastChunk, currentBytesRead);
+
+        //                    //lastChunk = 
+        //                }
+
+        //                chunk = lastChunk;
+        //                fileEnd = true;
+        //            }
+        //            for (UInt32 i = 0; i < chunk.Length / MD5Constants.BytesCountPerBits512Block; i++)
+        //            {
+        //                uint[] X = CopyBlock(chunk, i);
+
+        //                PerformCompression(X);
+        //            }
+        //        } while(!fileEnd);
+        //    }
+
+        //    return Hash;
+        //}
+        #endregion
     }
 }
