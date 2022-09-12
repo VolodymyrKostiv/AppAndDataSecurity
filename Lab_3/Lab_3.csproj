@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A9548807-B980-4611-80D1-DE4F8899B645}</ProjectGuid>
+    <ProjectGuid>{8FD9FD1E-46C6-49EF-BD77-20F698FC06C8}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Lab_2</RootNamespace>
-    <AssemblyName>Lab_2</AssemblyName>
+    <RootNamespace>Lab_3</RootNamespace>
+    <AssemblyName>Lab_3</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -36,6 +36,26 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=4.0.0.0, Culture=neutral, PublicKeyToken=69f1c32f803d307e, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.4.3.0\lib\net462\ControlzEx.dll</HintPath>
@@ -56,7 +76,7 @@
       <HintPath>..\packages\MaterialDesignThemes.4.5.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.39\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -82,14 +102,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Business\Digest.cs" />
-    <Compile Include="Business\MD5.cs" />
-    <Compile Include="Business\RoundFunctions.cs" />
-    <Compile Include="Business\StepFunctions.cs" />
     <Compile Include="Constants\BitConstants.cs" />
+    <Compile Include="Constants\RC5Constants.cs" />
+    <Compile Include="Enums\KeyLength.cs" />
+    <Compile Include="Enums\RoundCount.cs" />
+    <Compile Include="Enums\WordType.cs" />
     <Compile Include="Helpers\ArraysHelper.cs" />
-    <Compile Include="Helpers\BitsHelper.cs" />
-    <Compile Include="Constants\MD5Constants.cs" />
+    <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="Interfaces\IRC5Algorithm.cs" />
+    <Compile Include="Models\AlgorithmImplementations\RC5_64Bit.cs" />
+    <Compile Include="Models\AlgorithmImplementations\RC5_32Bit.cs" />
+    <Compile Include="Models\AlgorithmImplementations\RC5_16Bit.cs" />
+    <Compile Include="Models\ByteArrayExtensions.cs" />
+    <Compile Include="Models\RC5.cs" />
+    <Compile Include="Models\RC5_Base.cs" />
     <Compile Include="ViewModels\HomeScreenViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\AnotherScreen.xaml.cs">
@@ -146,13 +172,21 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\CommonWPF\CommonWPF.csproj">
-      <Project>{8319eb50-f6be-4050-bdc5-d541a8e1df40}</Project>
+      <Project>{8319EB50-F6BE-4050-BDC5-D541A8E1DF40}</Project>
       <Name>CommonWPF</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Lab_1\Lab_1.csproj">
+      <Project>{a6f5ef7b-152c-4ffb-9fd3-f781b6ec78da}</Project>
+      <Name>Lab_1</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lab_2\Lab_2.csproj">
+      <Project>{a9548807-b980-4611-80d1-de4f8899b645}</Project>
+      <Name>Lab_2</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MaterialDesignThemes.4.5.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.5.0\build\MaterialDesignThemes.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

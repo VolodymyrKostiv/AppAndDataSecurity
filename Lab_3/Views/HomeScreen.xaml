@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Lab_3.Views.HomeScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:CommonWPF.Converters;assembly=CommonWPF"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="500"
+             d:DesignWidth="1200"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:StringToUpperConverter x:Key="StringToUpperConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Margin="2" />
+</UserControl>

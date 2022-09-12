@@ -1,4 +1,5 @@
 ﻿using Lab_2.Constants;
+using System;
 using System.Text;
 
 namespace Lab_2.Business
@@ -27,6 +28,13 @@ namespace Lab_2.Business
             var byteMessage = CalculateMD5(arr);
 
             return byteMessage.ToString();
+        }
+
+        public Digest HashArrayDigest(byte[] arr)
+        {
+            var byteMessage = CalculateMD5(arr);
+
+            return byteMessage;
         }
 
         private Digest CalculateMD5(byte[] message)

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Lab_2.Business
 {
-    internal class Digest
+    public class Digest
     {
         #region properties
 
@@ -76,6 +76,15 @@ namespace Lab_2.Business
         private static string ToByteString(uint x)
         {
             return string.Join(string.Empty, BitConverter.GetBytes(x).Select(y => y.ToString("x2")));
+        }
+
+        public byte[] ToByteArray()
+        {
+            return ArraysHelper.ConcatArrays(
+                BitConverter.GetBytes(A),
+                BitConverter.GetBytes(B),
+                BitConverter.GetBytes(C),
+                BitConverter.GetBytes(D));
         }
 
         #endregion overrides
