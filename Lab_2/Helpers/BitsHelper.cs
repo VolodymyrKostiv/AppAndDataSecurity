@@ -19,7 +19,7 @@ namespace Lab_2.Helpers
                     | (((uint)message[j + 2]) << ((int)BitConstants.BitsPerByte * 2))  // third byte
                     | (((uint)message[j + 3]) << ((int)BitConstants.BitsPerByte * 3)); // fourth byte
             }
-
+            
             return extractedArray;
         }
 

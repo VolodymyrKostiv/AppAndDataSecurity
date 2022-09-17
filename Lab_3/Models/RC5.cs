@@ -15,7 +15,7 @@ namespace Lab_3.Models
 
         #region constructors
 
-        public RC5(WordType wordType = WordType.Word32Bits)
+        public RC5(WordType wordType = WordType.Word_32)
         {
             _wordType = wordType;
             ChangeAlgorithm(wordType);
@@ -25,13 +25,13 @@ namespace Lab_3.Models
         {
             switch(wordType)
             {
-                case WordType.Word16Bits:
+                case WordType.Word_16:
                     _algorithm = new RC5_16Bit();
                     break;
-                case WordType.Word32Bits:
+                case WordType.Word_32:
                     _algorithm = new RC5_32Bit();
                     break;
-                case WordType.Word64Bits:
+                case WordType.Word_64:
                     _algorithm = new RC5_64Bit();
                     break;
             }

@@ -104,6 +104,7 @@
     </ApplicationDefinition>
     <Compile Include="Constants\BitConstants.cs" />
     <Compile Include="Constants\RC5Constants.cs" />
+    <Compile Include="Converters\EnumBooleanConverter.cs" />
     <Compile Include="Enums\KeyLength.cs" />
     <Compile Include="Enums\RoundCount.cs" />
     <Compile Include="Enums\WordType.cs" />

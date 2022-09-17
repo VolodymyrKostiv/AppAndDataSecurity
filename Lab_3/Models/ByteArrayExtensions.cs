@@ -17,7 +17,7 @@ namespace Lab_3.Models
             var hasher = new MD5();
             var bytesHash = hasher.HashArrayDigest(key).ToByteArray();
 
-            if (keyLengthInBytes == KeyLength.Bytes_8)
+            if (keyLengthInBytes == KeyLength.Bytes_8 || keyLengthInBytes == KeyLength.Bytes_16)
             {
                 bytesHash = bytesHash.Take(bytesHash.Length / 2).ToArray();
             }

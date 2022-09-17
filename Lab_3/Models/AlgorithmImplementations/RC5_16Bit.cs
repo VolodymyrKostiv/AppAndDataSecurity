@@ -31,6 +31,10 @@ namespace Lab_3.Models.AlgorithmImplementations
 
         public byte[] EncipherCBCPAD(byte[] input, int numOfRounds, byte[] key)
         {
+            //FileHelper fileHelper = new FileHelper();
+            //fileHelper.ReadFile(@"D:\Programs\WindowISO\Windows.iso");
+            //RC5 rc5 = new RC5(10, GetType());
+
             var paddedBytes = ArraysHelper.ConcatArrays(input, GetPadding(input));
             int bytesPerBlock = BytesPerBlock;
             ushort[] s = BuildExpandedKeyTable(key, numOfRounds);
@@ -85,55 +89,55 @@ namespace Lab_3.Models.AlgorithmImplementations
 
         private void EncipherECB(byte[] inBytes, byte[] outBytes, int inStart, int outStart, ushort[] s, int rounds)
         {
-            ushort a = CreateFromBytes(inBytes, inStart);
-            ushort b = CreateFromBytes(inBytes, inStart + BytesPerWord);
+            ushort A = CreateFromBytes(inBytes, inStart);
+            ushort B = CreateFromBytes(inBytes, inStart + BytesPerWord);
 
-            a += s[0];
-            b += s[1];
+            A += s[0];
+            B += s[1];
 
             for (int i = 1; i < rounds + 1; ++i)
             {
-                a ^= b;
-                a = ROL(a, b);
-                a += s[2 * i];
+                A ^= B;
+                A = ROL(A, B);
+                A += s[2 * i];
 
-                b ^= a;
-                b = ROL(b, a);
-                b += s[2 * i + 1];
+                B ^= A;
+                B = ROL(B, A);
+                B += s[2 * i + 1];
             }
 
-            FillBytesArray(outBytes, outStart, a);
-            FillBytesArray(outBytes, outStart + BytesPerWord, a);
+            FillBytesArray(outBytes, outStart, A);
+            FillBytesArray(outBytes, outStart + BytesPerWord, A);
         }
 
         private void DecipherECB(byte[] inBuf, byte[] outBuf, int inStart, int outStart, ushort[] s, int rounds)
         {
-            var a = CreateFromBytes(inBuf, inStart);
-            var b = CreateFromBytes(inBuf, inStart + BytesPerWord);
+            ushort A = CreateFromBytes(inBuf, inStart);
+            ushort B = CreateFromBytes(inBuf, inStart + BytesPerWord);
 
             for (var i = rounds; i > 0; --i)
             {
-                b -= s[2 * i + 1];
-                b = ROR(b, a);
-                b ^= a;
+                B -= s[2 * i + 1];
+                B = ROR(B, A);
+                B ^= A;
 
-                a -= s[2 * i];
-                a = ROR(a, b);
-                a ^= b;
+                A -= s[2 * i];
+                A = ROR(A, B);
+                A ^= B;
             }
 
-            a -= s[0];
-            b -= s[1];
+            A -= s[0];
+            B -= s[1];
 
-            FillBytesArray(outBuf, outStart, a);
-            FillBytesArray(outBuf, outStart + BytesPerWord, b);
+            FillBytesArray(outBuf, outStart, A);
+            FillBytesArray(outBuf, outStart + BytesPerWord, B);
         }
 
         private byte[] GetPadding(byte[] inBytes)
         {
-            var paddingLength = BytesPerBlock - (inBytes.Length % BytesPerBlock);
+            int paddingLength = BytesPerBlock - (inBytes.Length % BytesPerBlock);
 
-            var padding = new byte[paddingLength];
+            byte[] padding = new byte[paddingLength];
 
             for (int i = 0; i < padding.Length; ++i)
             {
@@ -145,7 +149,7 @@ namespace Lab_3.Models.AlgorithmImplementations
 
         private byte[] GetRandomBytesForInitVector()
         {
-            var ivParts = new List<byte[]>();
+            List<byte[]> ivParts = new List<byte[]>();
 
             while (ivParts.Sum(ivp => ivp.Length) < BytesPerBlock)
             {
@@ -161,51 +165,50 @@ namespace Lab_3.Models.AlgorithmImplementations
                 ? key.Length / BytesPerWord + 1
                 : key.Length / BytesPerWord;
 
-            ushort[] lArr = new ushort[keysWordArrLength];
+            ushort[] L = new ushort[keysWordArrLength];
 
-            for (var i = key.Length - 1; i >= 0; i--)
+            for (int i = key.Length - 1; i >= 0; i--)
             {
-                lArr[i / BytesPerWord] = ROL(lArr[i / BytesPerWord], BitConstants.BitsPerByte);
-                lArr[i / BytesPerWord] += key[i];
+                L[i / BytesPerWord] = ROL(L[i / BytesPerWord], BitConstants.BitsPerByte);
+                L[i / BytesPerWord] += key[i];
             }
 
-            ushort[] sArray = new ushort[2 * (rounds + 1)];
-            sArray[0] = P;
-            var q = Q;
+            ushort[] S = new ushort[2 * (rounds + 1)];
+            S[0] = P;
 
-            for (var i = 1; i < sArray.Length; i++)
+            for (int i = 1; i < S.Length; i++)
             {
-                sArray[i] = sArray[i - 1];
-                sArray[i] += q;
+                S[i] = S[i - 1];
+                S[i] += Q;
             }
 
             ushort x = 0, y = 0;
-            int n = 3 * Math.Max(sArray.Length, lArr.Length);
+            int n = 3 * Math.Max(S.Length, L.Length);
 
             for (int k = 0, i = 0, j = 0; k < n; ++k)
             {
-                sArray[i] += x;
-                sArray[i] += y;
-                sArray[i] = ROL(sArray[i], 3);
-                x = sArray[i];
+                S[i] += x;
+                S[i] += y;
+                S[i] = ROL(S[i], 3);
+                x = S[i];
 
-                lArr[j] += x;
-                lArr[j] += y;
-                lArr[j] = ROL(lArr[j], x + y);
-                y = lArr[j];
+                L[j] += x;
+                L[j] += y;
+                L[j] = ROL(L[j], x + y);
+                y = L[j];
 
-                i = (i + 1) % sArray.Length;
-                j = (j + 1) % lArr.Length;
+                i = (i + 1) % S.Length;
+                j = (j + 1) % L.Length;
             }
 
-            return sArray;
+            return S;
         }
 
         private ushort CreateFromBytes(byte[] bytes, int startFrom)
         {
             ushort value = 0;
 
-            for (var i = startFrom + BytesPerWord - 1; i > startFrom; --i)
+            for (int i = startFrom + BytesPerWord - 1; i > startFrom; --i)
             {
                 value = (ushort)(value | bytes[i]);
                 value = (ushort)(value << BitConstants.BitsPerByte);
@@ -218,7 +221,7 @@ namespace Lab_3.Models.AlgorithmImplementations
 
         private byte[] FillBytesArray(byte[] bytesToFill, int start, ushort value)
         {
-            var i = 0;
+            int i = 0;
             for (; i < BytesPerWord - 1; ++i)
             {
                 bytesToFill[start + i] = (byte)(value & BitConstants.ByteMask);

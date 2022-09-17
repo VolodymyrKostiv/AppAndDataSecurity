@@ -2,8 +2,8 @@
 {
     public enum WordType
     {
-        Word16Bits,
-        Word32Bits,
-        Word64Bits,
+        Word_16 = 16,
+        Word_32 = 32,
+        Word_64 = 64,
     }
 }
