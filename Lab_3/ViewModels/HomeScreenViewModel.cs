@@ -8,6 +8,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -15,15 +16,31 @@ namespace Lab_3.ViewModels
 {
     internal class HomeScreenViewModel : BaseViewModel
     {
+        #region fields
+
+        private bool _operationActive;
+
+        #endregion fields
+
         #region properties
 
         public string InputFilePath { get; set; }
 
-        public string Password { get; set; }   
+        public string Password { get; set; } = "";
 
         public KeyLength PasswordLength { get; set; }
         public WordType WordLength { get; set; }
         public RoundCount NumOfRounds { get; set; }
+
+        public bool OperationActive
+        {
+            get => _operationActive;
+            set
+            {
+                _operationActive = value;
+                NotifyPropertyChanged(nameof(OperationActive));
+            }
+        }
 
         #endregion properties
 
@@ -45,24 +62,27 @@ namespace Lab_3.ViewModels
         {
             if (ChooseFile())
             {
-                RC5 rc5 = new RC5();
-
-                if (Password.Length != (int)PasswordLength)
+                try
                 {
-                    MessageBox.Show("Bad password length", "Password length must be as selected", MessageBoxButton.OK);
-                    return;
+                    OperationActive = true;
+                    RC5 rc5 = new RC5(WordLength);
+                    if (Password.Length != (int)PasswordLength)
+                    {
+                        MessageBox.Show("Bad password length", "Password length must be as selected", MessageBoxButton.OK);
+                        return;
+                    }
+
+                    var hashedKey = Encoding.UTF8.GetBytes(Password).GetMD5HashedKeyForRC5(PasswordLength);
+                    var encodedFileContent = await Task.Run(() => rc5.Encrypt(InputFilePath, (int)NumOfRounds, hashedKey));
+
+                    MessageBox.Show("Encrypted", "RC5", MessageBoxButton.OK);
+                    OperationActive = false;
                 }
-
-                var hashedKey = Encoding.UTF8
-                    .GetBytes(Password)
-                    .GetMD5HashedKeyForRC5(PasswordLength);
-
-                var encodedFileContent = rc5.Encrypt(Encoding.UTF8
-                    .GetBytes("test"),
-                    (int)NumOfRounds,
-                    hashedKey);
-
-                MessageBox.Show("Encrypted", "RC5", MessageBoxButton.OK);
+                catch (Exception ex)
+                {
+                    OperationActive = false;
+                    MessageBox.Show(ex.Message, "Pizda encryptiony");
+                }
             }
         }
 
@@ -73,22 +93,26 @@ namespace Lab_3.ViewModels
             {
                 try
                 {
-                    RC5 rc5 = new RC5();
-                    var hashedKey = Encoding.UTF8
-                        .GetBytes("password")
-                        .GetMD5HashedKeyForRC5(Enums.KeyLength.Bytes_8);
+                    OperationActive = true;
+                    RC5 rc5 = new RC5(WordLength);
 
-                    var encodedFileContent = rc5.Encrypt(Encoding.UTF8
-                        .GetBytes("test"),
-                        8,
-                        hashedKey);
+                    if (Password.Length != (int)PasswordLength)
+                    {
+                        MessageBox.Show("Bad password length", "Password length must be as selected", MessageBoxButton.OK);
+                        return;
+                    }
+
+                    var hashedKey = Encoding.UTF8.GetBytes(Password).GetMD5HashedKeyForRC5(PasswordLength);
+                    var decodedFileContent = await Task.Run(() => rc5.Decrypt(InputFilePath, (int)NumOfRounds, hashedKey));
+
+                    MessageBox.Show("Decrypted", "RC5", MessageBoxButton.OK);
+                    OperationActive = false;
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "RC5");
+                    OperationActive = false;
+                    MessageBox.Show(ex.Message, "Pizda decryptiony");
                 }
-
-                MessageBox.Show("Decrypted", "RC5", MessageBoxButton.OK);
             }
         }
 
@@ -98,6 +122,7 @@ namespace Lab_3.ViewModels
 
         private bool ChooseFile()
         {
+            OperationActive = true;
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Title = "Choose input file",
@@ -108,6 +133,8 @@ namespace Lab_3.ViewModels
                 InputFilePath = openFileDialog.FileName;
                 return true;
             }
+            OperationActive = false;
+
             return false;
         }
 

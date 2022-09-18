@@ -1,6 +1,7 @@
 ﻿using Lab_3.Enums;
 using Lab_3.Interfaces;
 using Lab_3.Models.AlgorithmImplementations;
+using System.Threading.Tasks;
 
 namespace Lab_3.Models
 {
@@ -9,7 +10,6 @@ namespace Lab_3.Models
         #region fields
 
         private IRC5Algorithm _algorithm;
-        private WordType _wordType;
 
         #endregion fields
 
@@ -17,13 +17,26 @@ namespace Lab_3.Models
 
         public RC5(WordType wordType = WordType.Word_32)
         {
-            _wordType = wordType;
             ChangeAlgorithm(wordType);
+        }
+
+        #endregion constructors
+
+        #region methods
+
+        public async Task<byte[]> Encrypt(string fileName, int numOfRounds, byte[] key)
+        {
+            return _algorithm.EncipherCBCPAD(fileName, numOfRounds, key);
+        }
+
+        public async Task<byte[]> Decrypt(string fileName, int numOfRounds, byte[] key)
+        {
+            return _algorithm.DecipherCBCPAD(fileName, numOfRounds, key);
         }
 
         public void ChangeAlgorithm(WordType wordType)
         {
-            switch(wordType)
+            switch (wordType)
             {
                 case WordType.Word_16:
                     _algorithm = new RC5_16Bit();
@@ -37,17 +50,6 @@ namespace Lab_3.Models
             }
         }
 
-        public byte[] Encrypt(byte[] input, int numOfRounds, byte[] key)
-        {
-            return _algorithm.EncipherCBCPAD(input, numOfRounds, key);
-        }
-
-        public byte[] Decrypt(byte[] input, int numOfRounds, byte[] key)
-        {
-            return _algorithm.DecipherCBCPAD(input, numOfRounds, key);
-        }
-
-
-        #endregion constructors
+        #endregion methods
     }
 }

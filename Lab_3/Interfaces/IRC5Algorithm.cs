@@ -2,7 +2,7 @@
 {
     internal interface IRC5Algorithm
     {
-        byte[] EncipherCBCPAD(byte[] input, int numOfRounds, byte[] key);
-        byte[] DecipherCBCPAD(byte[] input, int numOfRounds, byte[] key);
+        byte[] EncipherCBCPAD(string fileName, int numOfRounds, byte[] key);
+        byte[] DecipherCBCPAD(string fileName, int numOfRounds, byte[] key);
     }
 }

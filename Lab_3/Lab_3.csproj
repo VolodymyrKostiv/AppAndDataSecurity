@@ -104,12 +104,14 @@
     </ApplicationDefinition>
     <Compile Include="Constants\BitConstants.cs" />
     <Compile Include="Constants\RC5Constants.cs" />
+    <Compile Include="Converters\BoolToOppositeConverter.cs" />
     <Compile Include="Converters\EnumBooleanConverter.cs" />
     <Compile Include="Enums\KeyLength.cs" />
     <Compile Include="Enums\RoundCount.cs" />
     <Compile Include="Enums\WordType.cs" />
     <Compile Include="Helpers\ArraysHelper.cs" />
-    <Compile Include="Helpers\FileHelper.cs" />
+    <Compile Include="Helpers\FileHelpers\InputFileHelper.cs" />
+    <Compile Include="Helpers\FileHelpers\OutputFileHelper.cs" />
     <Compile Include="Interfaces\IRC5Algorithm.cs" />
     <Compile Include="Models\AlgorithmImplementations\RC5_64Bit.cs" />
     <Compile Include="Models\AlgorithmImplementations\RC5_32Bit.cs" />

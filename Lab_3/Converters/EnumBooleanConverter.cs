@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
@@ -11,6 +7,7 @@ namespace Lab_3.Converters
     public class EnumBooleanConverter : IValueConverter
     {
         #region IValueConverter Members
+
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string parameterString = parameter as string;
@@ -33,6 +30,7 @@ namespace Lab_3.Converters
 
             return Enum.Parse(targetType, parameterString);
         }
+
         #endregion
     }
 }

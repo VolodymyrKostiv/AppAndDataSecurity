@@ -1,9 +1,8 @@
-﻿using Lab_1.Models;
-using Lab_3.Constants;
+﻿using Lab_3.Constants;
 using Lab_3.Helpers;
 using Lab_3.Interfaces;
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Lab_3.Models.AlgorithmImplementations
@@ -22,141 +21,147 @@ namespace Lab_3.Models.AlgorithmImplementations
 
         public RC5_16Bit()
         {
-            _numberGenerator = new NumberGenerator();
+            //
         }
 
         #endregion
 
         #region implementations
 
-        public byte[] EncipherCBCPAD(byte[] input, int numOfRounds, byte[] key)
+        public byte[] EncipherCBCPAD(string fileName, int numOfRounds, byte[] key)
         {
-            //FileHelper fileHelper = new FileHelper();
-            //fileHelper.ReadFile(@"D:\Programs\WindowISO\Windows.iso");
-            //RC5 rc5 = new RC5(10, GetType());
+            _inputFileHelper.OpenFile(fileName);
+            _outputFileHelper.OpenFile(fileName + "_encrypted");
 
-            var paddedBytes = ArraysHelper.ConcatArrays(input, GetPadding(input));
+            ushort[] S = BuildExpandedKeyTable(key, numOfRounds);
             int bytesPerBlock = BytesPerBlock;
-            ushort[] s = BuildExpandedKeyTable(key, numOfRounds);
-            var cnPrev = GetRandomBytesForInitVector().Take(bytesPerBlock).ToArray();
-            var encodedFileContent = new byte[cnPrev.Length + paddedBytes.Length];
 
-            EncipherECB(cnPrev, encodedFileContent, inStart: 0, outStart: 0, s, numOfRounds);
+            byte[] cnPrev = GetRandomBytesForInitVector().Take(bytesPerBlock).ToArray();
+            byte[] bytesToEncode = new byte[bytesPerBlock];
+            byte[] encodedBlock = new byte[bytesPerBlock];
 
-            for (int i = 0; i < paddedBytes.Length; i += bytesPerBlock)
+            EncipherECB(S, numOfRounds, cnPrev, encodedBlock);
+            _outputFileHelper.WriteBlock(encodedBlock);
+
+            bool endOfFile = false;
+
+            do
             {
-                var cn = new byte[bytesPerBlock];
-                Array.Copy(paddedBytes, i, cn, 0, cn.Length);
+                bytesToEncode = _inputFileHelper.ReadBlock(bytesPerBlock);
+                if (bytesToEncode.Length < bytesPerBlock)
+                {
+                    endOfFile = true;
+                    bytesToEncode = ArraysHelper.ConcatArrays(bytesToEncode, GetPadding(bytesToEncode));
+                }
 
-                cn.XorWith(cnPrev, 0, 0, cn.Length);
+                bytesToEncode.XorWith(cnPrev, 0, 0, cnPrev.Length);
 
-                EncipherECB(cn, encodedFileContent, 0, i + bytesPerBlock, s, numOfRounds);
-                Array.Copy(encodedFileContent, i + bytesPerBlock, cnPrev, 0, cn.Length);
-            }
+                EncipherECB(S, numOfRounds, bytesToEncode, encodedBlock);
+                Array.Copy(encodedBlock, cnPrev, encodedBlock.Length);
 
-            return encodedFileContent;
+                _outputFileHelper.WriteBlock(encodedBlock);
+
+            } while (!endOfFile);
+
+            _inputFileHelper.CloseFile();
+            _outputFileHelper.CloseFile();
+
+            return encodedBlock;
         }
 
-        public byte[] DecipherCBCPAD(byte[] input, int numOfRounds, byte[] key)
+        public byte[] DecipherCBCPAD(string fileName, int numOfRounds, byte[] key)
         {
-            var bytesPerBlock = BytesPerBlock;
-            var s = BuildExpandedKeyTable(key, numOfRounds);
-            var cnPrev = new byte[bytesPerBlock];
-            var decodedFileContent = new byte[input.Length - cnPrev.Length];
+            _inputFileHelper.OpenFile(fileName);
+            _outputFileHelper.OpenFile(fileName + "_decrypted");
 
-            DecipherECB(input, cnPrev, 0, 0, s, numOfRounds);
+            ushort[] S = BuildExpandedKeyTable(key, numOfRounds);
+            int bytesPerBlock = BytesPerBlock;
 
-            for (int i = bytesPerBlock; i < input.Length; i += bytesPerBlock)
+            byte[] cnPrev = new byte[bytesPerBlock];
+            byte[] bytesToDecode = _inputFileHelper.ReadBlock(bytesPerBlock);
+            byte[] decodedBlock = new byte[bytesPerBlock];
+
+            DecipherECB(S, numOfRounds, bytesToDecode, decodedBlock);
+            Array.Copy(decodedBlock, cnPrev, bytesToDecode.Length);
+            var firstLoop = true;
+
+            do
             {
-                var cn = new byte[bytesPerBlock];
-                Array.Copy(input, i, cn, 0, cn.Length);
+                bytesToDecode = _inputFileHelper.ReadBlock(bytesPerBlock);
+                if (bytesToDecode.Length <= 0 && !firstLoop)
+                {
+                    _outputFileHelper.WriteBlock(decodedBlock.Take(decodedBlock.Length - decodedBlock.Last()).ToArray());
+                    break;
+                }
+                else if (!firstLoop)
+                {
+                    _outputFileHelper.WriteBlock(decodedBlock);
+                }
 
-                DecipherECB(cn, decodedFileContent, 0, i - bytesPerBlock, s, numOfRounds);
+                DecipherECB(S, numOfRounds, bytesToDecode, decodedBlock);
 
-                decodedFileContent.XorWith(cnPrev, i - bytesPerBlock, 0, cn.Length);
-                Array.Copy(input, i, cnPrev, 0, cnPrev.Length);
-            }
+                decodedBlock.XorWith(cnPrev, 0, 0, cnPrev.Length);
 
-            var decodedWithoutPadding = new byte[decodedFileContent.Length - decodedFileContent.Last()];
-            Array.Copy(decodedFileContent, decodedWithoutPadding, decodedWithoutPadding.Length);
+                Array.Copy(bytesToDecode, cnPrev, bytesToDecode.Length);
+                firstLoop = false;
+            } while (true);
 
-            return decodedWithoutPadding;
+            _inputFileHelper.CloseFile();
+            _outputFileHelper.CloseFile();
+
+            var result = decodedBlock.Take(decodedBlock.Length - decodedBlock.Last()).ToArray();
+
+            return result;
         }
 
         #endregion implementations
 
         #region methods
 
-        private void EncipherECB(byte[] inBytes, byte[] outBytes, int inStart, int outStart, ushort[] s, int rounds)
+        private void EncipherECB(ushort[] S, int rounds, byte[] inBytes, byte[] outBytes)
         {
-            ushort A = CreateFromBytes(inBytes, inStart);
-            ushort B = CreateFromBytes(inBytes, inStart + BytesPerWord);
+            ushort A = CreateFromBytes(inBytes, 0);
+            ushort B = CreateFromBytes(inBytes, BytesPerWord);
 
-            A += s[0];
-            B += s[1];
+            A += S[0];
+            B += S[1];
 
             for (int i = 1; i < rounds + 1; ++i)
             {
                 A ^= B;
                 A = ROL(A, B);
-                A += s[2 * i];
+                A += S[2 * i];
 
                 B ^= A;
                 B = ROL(B, A);
-                B += s[2 * i + 1];
+                B += S[2 * i + 1];
             }
 
-            FillBytesArray(outBytes, outStart, A);
-            FillBytesArray(outBytes, outStart + BytesPerWord, A);
+            FillBytesArray(outBytes, 0, A);
+            FillBytesArray(outBytes, BytesPerWord, B);
         }
 
-        private void DecipherECB(byte[] inBuf, byte[] outBuf, int inStart, int outStart, ushort[] s, int rounds)
+        private void DecipherECB(ushort[] S, int rounds, byte[] inBytes, byte[] outBytes)
         {
-            ushort A = CreateFromBytes(inBuf, inStart);
-            ushort B = CreateFromBytes(inBuf, inStart + BytesPerWord);
+            ushort A = CreateFromBytes(inBytes, 0);
+            ushort B = CreateFromBytes(inBytes, BytesPerWord);
 
             for (var i = rounds; i > 0; --i)
             {
-                B -= s[2 * i + 1];
+                B -= S[2 * i + 1];
                 B = ROR(B, A);
                 B ^= A;
 
-                A -= s[2 * i];
+                A -= S[2 * i];
                 A = ROR(A, B);
                 A ^= B;
             }
 
-            A -= s[0];
-            B -= s[1];
+            A -= S[0];
+            B -= S[1];
 
-            FillBytesArray(outBuf, outStart, A);
-            FillBytesArray(outBuf, outStart + BytesPerWord, B);
-        }
-
-        private byte[] GetPadding(byte[] inBytes)
-        {
-            int paddingLength = BytesPerBlock - (inBytes.Length % BytesPerBlock);
-
-            byte[] padding = new byte[paddingLength];
-
-            for (int i = 0; i < padding.Length; ++i)
-            {
-                padding[i] = (byte)paddingLength;
-            }
-
-            return padding;
-        }
-
-        private byte[] GetRandomBytesForInitVector()
-        {
-            List<byte[]> ivParts = new List<byte[]>();
-
-            while (ivParts.Sum(ivp => ivp.Length) < BytesPerBlock)
-            {
-                ivParts.Add(BitConverter.GetBytes(_numberGenerator.GenerateNextNumber()));
-            }
-
-            return ArraysHelper.ConcatArrays(ivParts.ToArray());
+            FillBytesArray(outBytes, 0, A);
+            FillBytesArray(outBytes, BytesPerWord, B);
         }
 
         private ushort[] BuildExpandedKeyTable(byte[] key, int rounds)
@@ -235,13 +240,17 @@ namespace Lab_3.Models.AlgorithmImplementations
 
         private ushort ROL(ushort value, int offset)
         {
+            offset %= BytesPerWord;
+
             value = (ushort)((value << offset) | (value >> (BitsPerWord - offset)));
 
             return value;
         }
 
-        private ushort ROR(ushort value, ushort offset)
+        private ushort ROR(ushort value, int offset)
         {
+            offset %= BytesPerWord;
+
             value = (ushort)((value >> offset) | (value << (BitsPerWord - offset)));
 
             return value;

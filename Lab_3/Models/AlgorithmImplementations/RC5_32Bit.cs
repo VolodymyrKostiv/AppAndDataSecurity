@@ -244,6 +244,16 @@ namespace Lab_3.Models.AlgorithmImplementations
             return value;
         }
 
+        public byte[] EncipherCBCPAD(string fileName, int numOfRounds, byte[] key)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] DecipherCBCPAD(string fileName, int numOfRounds, byte[] key)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion methods
     }
 }
