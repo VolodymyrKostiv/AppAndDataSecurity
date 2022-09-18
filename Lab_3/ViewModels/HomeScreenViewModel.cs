@@ -69,6 +69,7 @@ namespace Lab_3.ViewModels
                     if (Password.Length != (int)PasswordLength)
                     {
                         MessageBox.Show("Bad password length", "Password length must be as selected", MessageBoxButton.OK);
+                        OperationActive = false;
                         return;
                     }
 
@@ -99,6 +100,7 @@ namespace Lab_3.ViewModels
                     if (Password.Length != (int)PasswordLength)
                     {
                         MessageBox.Show("Bad password length", "Password length must be as selected", MessageBoxButton.OK);
+                        OperationActive = false;
                         return;
                     }
 

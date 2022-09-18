@@ -2,6 +2,7 @@
 using Lab_3.Helpers;
 using Lab_3.Interfaces;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -30,6 +31,9 @@ namespace Lab_3.Models.AlgorithmImplementations
 
         public byte[] EncipherCBCPAD(string fileName, int numOfRounds, byte[] key)
         {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             _inputFileHelper.OpenFile(fileName);
             _outputFileHelper.OpenFile(fileName + "_encrypted");
 
@@ -66,11 +70,18 @@ namespace Lab_3.Models.AlgorithmImplementations
             _inputFileHelper.CloseFile();
             _outputFileHelper.CloseFile();
 
+            var inputSec = _inputFileHelper.Watch.Elapsed.TotalSeconds;
+            var outputSec = _outputFileHelper.Watch.Elapsed.TotalSeconds;
+            var total = watch.Elapsed.TotalSeconds;
+
             return encodedBlock;
         }
 
         public byte[] DecipherCBCPAD(string fileName, int numOfRounds, byte[] key)
         {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
             _inputFileHelper.OpenFile(fileName);
             _outputFileHelper.OpenFile(fileName + "_decrypted");
 
@@ -108,6 +119,10 @@ namespace Lab_3.Models.AlgorithmImplementations
 
             _inputFileHelper.CloseFile();
             _outputFileHelper.CloseFile();
+
+            var inputSec = _inputFileHelper.Watch.Elapsed.TotalSeconds;
+            var outputSec = _outputFileHelper.Watch.Elapsed.TotalSeconds;
+            var total = watch.Elapsed.TotalSeconds;
 
             var result = decodedBlock.Take(decodedBlock.Length - decodedBlock.Last()).ToArray();
 

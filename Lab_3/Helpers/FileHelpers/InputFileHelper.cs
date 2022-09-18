@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace Lab_3.Helpers.FileHelpers
@@ -11,9 +12,14 @@ namespace Lab_3.Helpers.FileHelpers
         private FileStream _fileStream;
         private BufferedStream _bufferedStream;
         List<byte> bytes = new List<byte>();
-        private int _position;
 
         #endregion fields
+        
+        #region properties
+
+        public Stopwatch Watch { get; set; } = new Stopwatch();
+
+        #endregion properties
 
         #region constructors
 
@@ -25,7 +31,6 @@ namespace Lab_3.Helpers.FileHelpers
         public InputFileHelper(string fileName)
         {
             OpenFile(fileName);
-            _position = 0;
         }
 
         #endregion constructors
@@ -34,7 +39,7 @@ namespace Lab_3.Helpers.FileHelpers
 
         public byte[] ReadBlock(int blockSize)
         {
-
+            Watch.Start();
             bytes.Clear();
             int tempByte = 0;
             try
@@ -63,6 +68,7 @@ namespace Lab_3.Helpers.FileHelpers
             {
                 throw new Exception(ex.Message + "\nBlyat, ebanyi input stream");
             }
+            Watch.Stop();
 
             return bytes.ToArray();
         }
