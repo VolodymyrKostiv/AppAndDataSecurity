@@ -112,6 +112,7 @@
     <Compile Include="Helpers\ArraysHelper.cs" />
     <Compile Include="Helpers\FileHelpers\InputFileHelper.cs" />
     <Compile Include="Helpers\FileHelpers\OutputFileHelper.cs" />
+    <Compile Include="Helpers\MD5Helper.cs" />
     <Compile Include="Interfaces\IRC5Algorithm.cs" />
     <Compile Include="Models\AlgorithmImplementations\RC5_64Bit.cs" />
     <Compile Include="Models\AlgorithmImplementations\RC5_32Bit.cs" />

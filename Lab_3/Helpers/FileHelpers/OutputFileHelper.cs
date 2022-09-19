@@ -43,7 +43,7 @@ namespace Lab_3.Helpers.FileHelpers
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message + "\nBlyat, ebanyi output stream");
+                throw new Exception(ex.Message + "\nOutput stream died :(");
             }
             Watch.Stop();
         }

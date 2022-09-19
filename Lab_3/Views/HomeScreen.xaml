@@ -14,6 +14,11 @@
             <converters:StringToUpperConverter x:Key="StringToUpperConverter" />
             <l:EnumBooleanConverter x:Key="enumBooleanConverter" />
             <l:BoolToOppositeBoolConverter x:Key="boolToOppositeConverter" />
+            <Style BasedOn="{StaticResource MahApps.Styles.RadioButton.Win10}" TargetType="RadioButton">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="5">
@@ -26,95 +31,135 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="1.5*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0"
+                  Grid.ColumnSpan="2"
+                  Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+
                 <Label Grid.Column="0"
+                       Margin="0,0,10,0"
                        VerticalAlignment="Center"
                        Content="Password"
                        FontSize="20"
                        Style="{StaticResource MahApps.Styles.Label}" />
+
                 <TextBox Grid.Column="1"
                          VerticalAlignment="Center"
                          FontSize="20"
                          Style="{StaticResource MahApps.Styles.TextBox}"
                          Text="{Binding Password}" />
             </Grid>
-            <Grid Grid.Row="1" Margin="5">
+
+            <Label Grid.Row="1"
+                   Grid.Column="0"
+                   Margin="5"
+                   VerticalAlignment="Center"
+                   Content="Key length (bytes)"
+                   FontSize="16"
+                   Style="{StaticResource MahApps.Styles.Label}" />
+
+            <Grid Grid.Row="1"
+                  Grid.Column="1"
+                  Margin="15,5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
+
                 <RadioButton Grid.Column="0"
-                             Content="8 bytes"
+                             Content="8"
                              GroupName="KeyLength"
-                             IsChecked="{Binding Path=PasswordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Bytes_8}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding PasswordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Bytes_8}" />
+
                 <RadioButton Grid.Column="1"
-                             Content="16 bytes"
+                             Content="16"
                              GroupName="KeyLength"
-                             IsChecked="{Binding Path=PasswordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Bytes_16}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding PasswordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Bytes_16}" />
+
                 <RadioButton Grid.Column="2"
-                             Content="32 bytes"
+                             Content="32"
+                             FontSize="16"
                              GroupName="KeyLength"
-                             IsChecked="{Binding Path=PasswordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Bytes_32}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding PasswordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Bytes_32}" />
             </Grid>
-            <Grid Grid.Row="2" Margin="5">
+
+            <Label Grid.Row="2"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Content="Word length (bits)"
+                   FontSize="16"
+                   Style="{StaticResource MahApps.Styles.Label}" />
+
+            <Grid Grid.Row="2"
+                  Grid.Column="1"
+                  Margin="15,5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
+
                 <RadioButton Grid.Column="0"
-                             Content="16 bits"
+                             Content="16"
                              GroupName="WordLength"
-                             IsChecked="{Binding Path=WordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Word_16}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding Path=WordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Word_16}" />
                 <RadioButton Grid.Column="1"
-                             Content="32 bits"
+                             Content="32"
                              GroupName="WordLength"
-                             IsChecked="{Binding Path=WordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Word_32}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding Path=WordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Word_32}" />
                 <RadioButton Grid.Column="2"
-                             Content="64 bits"
+                             Content="64"
                              GroupName="WordLength"
-                             IsChecked="{Binding Path=WordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Word_64}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding Path=WordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Word_64}" />
             </Grid>
-            <Grid Grid.Row="3" Margin="5">
+
+            <Label Grid.Row="3"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Content="Rounds"
+                   FontSize="16"
+                   Style="{StaticResource MahApps.Styles.Label}" />
+
+            <Grid Grid.Row="3"
+                  Grid.Column="1"
+                  Margin="15,5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
+
                 <RadioButton Grid.Column="0"
-                             Content="8 rounds"
+                             Content="8"
                              GroupName="NumOfRounds"
-                             IsChecked="{Binding Path=NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_8}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_8}" />
                 <RadioButton Grid.Column="1"
-                             Content="12 rounds"
+                             Content="12"
                              GroupName="NumOfRounds"
-                             IsChecked="{Binding Path=NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_12}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_12}" />
                 <RadioButton Grid.Column="2"
-                             Content="16 rounds"
+                             Content="16"
                              GroupName="NumOfRounds"
-                             IsChecked="{Binding Path=NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_16}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_16}" />
                 <RadioButton Grid.Column="3"
-                             Content="20 rounds"
+                             Content="20"
                              GroupName="NumOfRounds"
-                             IsChecked="{Binding Path=NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_20}"
-                             Style="{StaticResource MahApps.Styles.RadioButton.Win10}" />
+                             IsChecked="{Binding NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_20}" />
             </Grid>
-            <Grid Grid.Row="4" Margin="5">
+
+            <Grid Grid.Row="4"
+                  Grid.ColumnSpan="2"
+                  Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />

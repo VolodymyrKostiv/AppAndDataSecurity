@@ -10,7 +10,7 @@ namespace Lab_3.Models.AlgorithmImplementations
 {
     internal class RC5_32Bit : RC5_Base, IRC5Algorithm
     {
-        #region prop
+        #region fields
 
         protected override int BytesPerWord { get => sizeof(uint); }
         private uint P = RC5Constants.P32;
@@ -25,7 +25,7 @@ namespace Lab_3.Models.AlgorithmImplementations
             _numberGenerator = new NumberGenerator();
         }
 
-        #endregion
+        #endregion constructors
 
         #region implementations
 

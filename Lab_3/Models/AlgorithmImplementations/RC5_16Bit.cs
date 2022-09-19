@@ -3,14 +3,13 @@ using Lab_3.Helpers;
 using Lab_3.Interfaces;
 using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 
 namespace Lab_3.Models.AlgorithmImplementations
 {
     internal class RC5_16Bit : RC5_Base, IRC5Algorithm
     {
-        #region prop
+        #region fields
 
         protected override int BytesPerWord { get => sizeof(ushort); }
         private ushort P = RC5Constants.P16;
@@ -25,7 +24,7 @@ namespace Lab_3.Models.AlgorithmImplementations
             //
         }
 
-        #endregion
+        #endregion constructors
 
         #region implementations
 

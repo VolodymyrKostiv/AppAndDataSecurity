@@ -2,11 +2,10 @@
 using CommonWPF.Interfaces;
 using CommonWPF.ViewModels;
 using Lab_3.Enums;
+using Lab_3.Helpers;
 using Lab_3.Models;
 using Microsoft.Win32;
 using System;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,6 +18,9 @@ namespace Lab_3.ViewModels
         #region fields
 
         private bool _operationActive;
+        private WordType _wordLength;
+        private KeyLength _passwordLength;
+        private RoundCount _numOfRounds;
 
         #endregion fields
 
@@ -28,9 +30,36 @@ namespace Lab_3.ViewModels
 
         public string Password { get; set; } = "";
 
-        public KeyLength PasswordLength { get; set; }
-        public WordType WordLength { get; set; }
-        public RoundCount NumOfRounds { get; set; }
+        public KeyLength PasswordLength
+        {
+            get => _passwordLength;
+            set
+            {
+                _passwordLength = value;
+                NotifyPropertyChanged(nameof(PasswordLength));
+            }
+        }
+
+
+        public WordType WordLength
+        {
+            get => _wordLength;
+            set
+            { 
+                _wordLength = value;
+                NotifyPropertyChanged(nameof(WordLength));
+            }
+        }
+
+        public RoundCount NumOfRounds 
+        { 
+            get => _numOfRounds;
+            set
+            { 
+                _numOfRounds = value; 
+                NotifyPropertyChanged(nameof(NumOfRounds));
+            }
+        } 
 
         public bool OperationActive
         {
@@ -49,6 +78,10 @@ namespace Lab_3.ViewModels
 
         public HomeScreenViewModel(IChangeViewModel viewModelChanger) : base(viewModelChanger)
         {
+            PasswordLength = KeyLength.Bytes_16;
+            WordLength = WordType.Word_32;
+            NumOfRounds = RoundCount.Rounds_12;
+
             EncryptCommand = new RelayCommand(Encrypt);
             DecryptCommand = new RelayCommand(Decrypt);
         }
@@ -66,14 +99,8 @@ namespace Lab_3.ViewModels
                 {
                     OperationActive = true;
                     RC5 rc5 = new RC5(WordLength);
-                    if (Password.Length != (int)PasswordLength)
-                    {
-                        MessageBox.Show("Bad password length", "Password length must be as selected", MessageBoxButton.OK);
-                        OperationActive = false;
-                        return;
-                    }
 
-                    var hashedKey = Encoding.UTF8.GetBytes(Password).GetMD5HashedKeyForRC5(PasswordLength);
+                    var hashedKey = MD5Helper.GetMD5HashedKeyForRC5(Encoding.UTF8.GetBytes(Password), PasswordLength);
                     var encodedFileContent = await Task.Run(() => rc5.Encrypt(InputFilePath, (int)NumOfRounds, hashedKey));
 
                     MessageBox.Show("Encrypted", "RC5", MessageBoxButton.OK);
@@ -82,7 +109,7 @@ namespace Lab_3.ViewModels
                 catch (Exception ex)
                 {
                     OperationActive = false;
-                    MessageBox.Show(ex.Message, "Pizda encryptiony");
+                    MessageBox.Show(ex.Message, "Encryption died :(");
                 }
             }
         }
@@ -97,14 +124,7 @@ namespace Lab_3.ViewModels
                     OperationActive = true;
                     RC5 rc5 = new RC5(WordLength);
 
-                    if (Password.Length != (int)PasswordLength)
-                    {
-                        MessageBox.Show("Bad password length", "Password length must be as selected", MessageBoxButton.OK);
-                        OperationActive = false;
-                        return;
-                    }
-
-                    var hashedKey = Encoding.UTF8.GetBytes(Password).GetMD5HashedKeyForRC5(PasswordLength);
+                    var hashedKey = MD5Helper.GetMD5HashedKeyForRC5(Encoding.UTF8.GetBytes(Password), PasswordLength);
                     var decodedFileContent = await Task.Run(() => rc5.Decrypt(InputFilePath, (int)NumOfRounds, hashedKey));
 
                     MessageBox.Show("Decrypted", "RC5", MessageBoxButton.OK);
@@ -113,7 +133,7 @@ namespace Lab_3.ViewModels
                 catch (Exception ex)
                 {
                     OperationActive = false;
-                    MessageBox.Show(ex.Message, "Pizda decryptiony");
+                    MessageBox.Show(ex.Message, "Decryption died :(");
                 }
             }
         }
@@ -125,16 +145,18 @@ namespace Lab_3.ViewModels
         private bool ChooseFile()
         {
             OperationActive = true;
+
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Title = "Choose input file",
-                InitialDirectory = @"D:\Program Files (x86)\Origin Games\Battlefield 1",
+                InitialDirectory = @"D:\Recordings",
             };
             if (openFileDialog.ShowDialog() == true)
             {
                 InputFilePath = openFileDialog.FileName;
                 return true;
             }
+
             OperationActive = false;
 
             return false;
