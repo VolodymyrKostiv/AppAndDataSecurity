@@ -1,50 +1,196 @@
 ﻿<UserControl x:Class="Lab_4.Views.HomeScreen"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:CommonWPF.Converters;assembly=CommonWPF"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:l="clr-namespace:Lab_4.Converters;assembly=CommonWPF"
+             xmlns:l1="clr-namespace:Lab_3.Converters;assembly=Lab_3"
+             xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              d:DesignHeight="500"
              d:DesignWidth="1200"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:StringToUpperConverter x:Key="StringToUpperConverter" />
+            <l1:EnumBooleanConverter x:Key="enumBooleanConverter" />
+            <l:BoolToOppositeBoolConverter x:Key="boolToOppositeConverter" />
+            <Style BasedOn="{StaticResource MahApps.Styles.RadioButton.Win10}" TargetType="RadioButton">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+            <Style BasedOn="{StaticResource MahApps.Styles.GroupBox}" TargetType="GroupBox">
+                <Setter Property="Margin" Value="10" />
+                <Setter Property="Padding" Value="5" />
+                <Setter Property="BorderThickness" Value="3" />
+            </Style>
+            <Style BasedOn="{StaticResource MahApps.Styles.Button}" TargetType="Button">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="500" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Margin="5">
+
+        <mahapps:ProgressRing IsActive="{Binding OperationActive}" />
+
+        <GroupBox Grid.Row="0" Header="RC5 Parameters">
+            <Grid IsEnabled="{Binding OperationActive, Converter={StaticResource boolToOppositeConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1.5*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Row="0"
+                      Grid.ColumnSpan="2"
+                      Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0"
+                           Margin="0,0,10,0"
+                           VerticalAlignment="Center"
+                           Content="Password"
+                           FontSize="20"
+                           Style="{StaticResource MahApps.Styles.Label}" />
+
+                    <TextBox Grid.Column="1"
+                             VerticalAlignment="Center"
+                             FontSize="20"
+                             Style="{StaticResource MahApps.Styles.TextBox}"
+                             Text="{Binding Password}" />
+                </Grid>
+
+                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       Margin="5"
+                       VerticalAlignment="Center"
+                       Content="Key length (bytes)"
+                       FontSize="16"
+                       Style="{StaticResource MahApps.Styles.Label}" />
+
+                <Grid Grid.Row="1"
+                      Grid.Column="1"
+                      Margin="15,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <RadioButton Grid.Column="0"
+                                 Content="8"
+                                 GroupName="KeyLength"
+                                 IsChecked="{Binding PasswordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Bytes_8}" />
+
+                    <RadioButton Grid.Column="1"
+                                 Content="16"
+                                 GroupName="KeyLength"
+                                 IsChecked="{Binding PasswordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Bytes_16}" />
+
+                    <RadioButton Grid.Column="2"
+                                 Content="32"
+                                 FontSize="16"
+                                 GroupName="KeyLength"
+                                 IsChecked="{Binding PasswordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Bytes_32}" />
+                </Grid>
+
+                <Label Grid.Row="2"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"
+                       Content="Word length (bits)"
+                       FontSize="16"
+                       Style="{StaticResource MahApps.Styles.Label}" />
+
+                <Grid Grid.Row="2"
+                      Grid.Column="1"
+                      Margin="15,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <RadioButton Grid.Column="0"
+                                 Content="16"
+                                 GroupName="WordLength"
+                                 IsChecked="{Binding Path=WordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Word_16}" />
+                    <RadioButton Grid.Column="1"
+                                 Content="32"
+                                 GroupName="WordLength"
+                                 IsChecked="{Binding Path=WordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Word_32}" />
+                    <RadioButton Grid.Column="2"
+                                 Content="64"
+                                 GroupName="WordLength"
+                                 IsChecked="{Binding Path=WordLength, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Word_64}" />
+                </Grid>
+
+                <Label Grid.Row="3"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"
+                       Content="Rounds"
+                       FontSize="16"
+                       Style="{StaticResource MahApps.Styles.Label}" />
+
+                <Grid Grid.Row="3"
+                      Grid.Column="1"
+                      Margin="15,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+
+                    <RadioButton Grid.Column="0"
+                                 Content="8"
+                                 GroupName="NumOfRounds"
+                                 IsChecked="{Binding NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_8}" />
+                    <RadioButton Grid.Column="1"
+                                 Content="12"
+                                 GroupName="NumOfRounds"
+                                 IsChecked="{Binding NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_12}" />
+                    <RadioButton Grid.Column="2"
+                                 Content="16"
+                                 GroupName="NumOfRounds"
+                                 IsChecked="{Binding NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_16}" />
+                    <RadioButton Grid.Column="3"
+                                 Content="20"
+                                 GroupName="NumOfRounds"
+                                 IsChecked="{Binding NumOfRounds, Converter={StaticResource enumBooleanConverter}, ConverterParameter=Rounds_20}" />
+                </Grid>
+            </Grid>
+        </GroupBox>
+
+        <Grid Grid.Row="1" Margin="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Encode" />
+            <Button Grid.Column="1" Content="Decode" />
+        </Grid>
 
-            <Button Grid.Column="0"
-                    Margin="5"
-                    Content="Encode"
-                    FontSize="16"
-                    Style="{StaticResource MahApps.Styles.Button}" />
-            <Button Grid.Column="1"
-                    Margin="5"
-                    Content="Encode private"
-                    FontSize="16"
-                    Style="{StaticResource MahApps.Styles.Button}" />
-            <Button Grid.Column="2"
-                    Margin="5"
-                    Content="Decode"
-                    FontSize="16"
-                    Style="{StaticResource MahApps.Styles.Button}" />
-            <Button Grid.Column="3"
-                    Margin="5"
-                    Content="Decode private"
-                    FontSize="16"
-                    Style="{StaticResource MahApps.Styles.Button}" />
-        </Grid>
-        <Grid Grid.Row="1">
-            <TextBlock Margin="10"
-                       FontSize="20"
-                       Style="{StaticResource MahApps.Styles.TextBlock}"
-                       Text="JKLGKJLGSDFKL" />
-        </Grid>
+        <GroupBox Grid.Row="2" Header="Time">
+            <TextBox Height="200"
+                     Margin="10"
+                     FontSize="20"
+                     Style="{StaticResource MahApps.Styles.TextBox.Button}" />
+        </GroupBox>
     </Grid>
 </UserControl>

@@ -6,8 +6,8 @@
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:viewModels4="clr-namespace:Lab_4.ViewModels"
                  Title="Lab_4"
-                 Width="800"
-                 Height="700"
+                 Width="600"
+                 Height="620"
                  mc:Ignorable="d">
     <Window.DataContext>
         <viewModels4:MainWindowViewModel />

@@ -6,8 +6,6 @@ using Lab_3.Models;
 using Microsoft.Win32;
 using System;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -17,7 +15,7 @@ namespace Lab_4.ViewModels
     {
         #region fields
 
-        private const KeyLength LengthOfKey = KeyLength.Bytes_16;
+        //private const KeyLength LengthOfKey = KeyLength.Bytes_16;
         private const string Password = "Password";
 
         private readonly RC5 _rc5;
