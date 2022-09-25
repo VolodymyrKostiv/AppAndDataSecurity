@@ -1,6 +1,6 @@
 ﻿namespace Lab_3.Enums
 {
-    internal enum RoundCount
+    public enum RoundCount
     {
         Rounds_8 = 8,
         Rounds_12 = 12,

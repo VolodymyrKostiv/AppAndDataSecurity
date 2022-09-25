@@ -15,6 +15,7 @@ namespace Lab_3.Models.AlgorithmImplementations
         protected override int BytesPerWord { get => sizeof(uint); }
         private uint P = RC5Constants.P32;
         private uint Q = RC5Constants.Q32;
+        private TimeSpan _timeResult;
 
         #endregion fields
 
@@ -35,7 +36,7 @@ namespace Lab_3.Models.AlgorithmImplementations
             watch.Start();
 
             _inputFileHelper.OpenFile(fileName);
-            _outputFileHelper.OpenFile(fileName + "_encrypted");
+            _outputFileHelper.OpenFile(fileName + "_rc5-enc");
 
             uint[] S = BuildExpandedKeyTable(key, numOfRounds);
             int bytesPerBlock = BytesPerBlock;
@@ -72,9 +73,7 @@ namespace Lab_3.Models.AlgorithmImplementations
 
             watch.Stop();
 
-            var inputSec = _inputFileHelper.Watch.Elapsed.TotalSeconds;
-            var outputSec = _outputFileHelper.Watch.Elapsed.TotalSeconds;
-            var total = watch.Elapsed.TotalSeconds; 
+            _timeResult = watch.Elapsed - (_inputFileHelper.Watch.Elapsed + _outputFileHelper.Watch.Elapsed);
 
             return encodedBlock;
         }
@@ -85,7 +84,7 @@ namespace Lab_3.Models.AlgorithmImplementations
             watch.Start();
 
             _inputFileHelper.OpenFile(fileName);
-            _outputFileHelper.OpenFile(fileName + "_decrypted");
+            _outputFileHelper.OpenFile(fileName + "_rc5-dec");
 
             uint[] S = BuildExpandedKeyTable(key, numOfRounds);
             int bytesPerBlock = BytesPerBlock;
@@ -124,11 +123,14 @@ namespace Lab_3.Models.AlgorithmImplementations
 
             watch.Stop();
 
-            var inputSec = _inputFileHelper.Watch.Elapsed.TotalSeconds;
-            var outputSec = _outputFileHelper.Watch.Elapsed.TotalSeconds;
-            var total = watch.Elapsed.TotalSeconds;
+            _timeResult = watch.Elapsed - (_inputFileHelper.Watch.Elapsed + _outputFileHelper.Watch.Elapsed);
 
             return decodedBlock;
+        }
+
+        public TimeSpan GetTime()
+        {
+            return _timeResult;
         }
 
         #endregion implementations

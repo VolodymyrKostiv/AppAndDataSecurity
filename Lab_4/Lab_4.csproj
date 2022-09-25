@@ -83,6 +83,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helper\FileHelper\InputFileHelper.cs" />
+    <Compile Include="Helper\FileHelper\OutputFileHelper.cs" />
+    <Compile Include="Helper\RSAHelper.cs" />
     <Compile Include="ViewModels\HomeScreenViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\AnotherScreen.xaml.cs">
@@ -139,7 +142,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonWPF\CommonWPF.csproj">
       <Project>{8319EB50-F6BE-4050-BDC5-D541A8E1DF40}</Project>

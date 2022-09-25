@@ -101,7 +101,7 @@ namespace Lab_3.ViewModels
                     RC5 rc5 = new RC5(WordLength);
 
                     var hashedKey = MD5Helper.GetMD5HashedKeyForRC5(Encoding.UTF8.GetBytes(Password), PasswordLength);
-                    var encodedFileContent = await Task.Run(() => rc5.Encrypt(InputFilePath, (int)NumOfRounds, hashedKey));
+                    var encodedFileContent = await Task.Run(() => rc5.EncryptAsync(InputFilePath, (int)NumOfRounds, hashedKey));
 
                     MessageBox.Show("Encrypted", "RC5", MessageBoxButton.OK);
                     OperationActive = false;
@@ -125,7 +125,7 @@ namespace Lab_3.ViewModels
                     RC5 rc5 = new RC5(WordLength);
 
                     var hashedKey = MD5Helper.GetMD5HashedKeyForRC5(Encoding.UTF8.GetBytes(Password), PasswordLength);
-                    var decodedFileContent = await Task.Run(() => rc5.Decrypt(InputFilePath, (int)NumOfRounds, hashedKey));
+                    var decodedFileContent = await Task.Run(() => rc5.DecryptAsync(InputFilePath, (int)NumOfRounds, hashedKey));
 
                     MessageBox.Show("Decrypted", "RC5", MessageBoxButton.OK);
                     OperationActive = false;

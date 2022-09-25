@@ -1,6 +1,7 @@
 ﻿using Lab_3.Enums;
 using Lab_3.Interfaces;
 using Lab_3.Models.AlgorithmImplementations;
+using System;
 using System.Threading.Tasks;
 
 namespace Lab_3.Models
@@ -24,14 +25,30 @@ namespace Lab_3.Models
 
         #region methods
 
-        public async Task<byte[]> Encrypt(string fileName, int numOfRounds, byte[] key)
+        public async Task<byte[]> EncryptAsync(string fileName, int numOfRounds, byte[] key)
         {
             return _algorithm.EncipherCBCPAD(fileName, numOfRounds, key);
         }
 
-        public async Task<byte[]> Decrypt(string fileName, int numOfRounds, byte[] key)
+        public async Task<byte[]> DecryptAsync(string fileName, int numOfRounds, byte[] key)
         {
             return _algorithm.DecipherCBCPAD(fileName, numOfRounds, key);
+        }
+
+        public byte[] Encrypt(string fileName, int numOfRounds, byte[] key)
+        {
+            return _algorithm.EncipherCBCPAD(fileName, numOfRounds, key);
+        }
+
+        public byte[] Decrypt(string fileName, int numOfRounds, byte[] key)
+        {
+            return _algorithm.DecipherCBCPAD(fileName, numOfRounds, key);
+        }
+
+
+        public TimeSpan GetTime()
+        {
+            return _algorithm.GetTime();
         }
 
         public void ChangeAlgorithm(WordType wordType)

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Lab_3.Helpers
 {
-    internal static class MD5Helper
+    public static class MD5Helper
     {
         public static byte[] GetMD5HashedKeyForRC5(byte[] key, KeyLength keyLengthInBytes)
         {

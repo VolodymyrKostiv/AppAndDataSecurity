@@ -15,6 +15,7 @@ namespace Lab_3.Models.AlgorithmImplementations
         protected override int BytesPerWord { get => sizeof(ulong); }
         private ulong P = RC5Constants.P64;
         private ulong Q = RC5Constants.Q64;
+        private TimeSpan _timeResult;
 
         #endregion fields
 
@@ -35,7 +36,7 @@ namespace Lab_3.Models.AlgorithmImplementations
             watch.Start();
 
             _inputFileHelper.OpenFile(fileName);
-            _outputFileHelper.OpenFile(fileName + "_encrypted");
+            _outputFileHelper.OpenFile(fileName + "_rc5-enc");
 
             ulong[] S = BuildExpandedKeyTable(key, numOfRounds);
             int bytesPerBlock = BytesPerBlock;
@@ -70,9 +71,9 @@ namespace Lab_3.Models.AlgorithmImplementations
             _inputFileHelper.CloseFile();
             _outputFileHelper.CloseFile();
 
-            var inputSec = _inputFileHelper.Watch.Elapsed.TotalSeconds;
-            var outputSec = _outputFileHelper.Watch.Elapsed.TotalSeconds;
-            var total = watch.Elapsed.TotalSeconds;
+            watch.Stop();
+
+            _timeResult = watch.Elapsed - (_inputFileHelper.Watch.Elapsed + _outputFileHelper.Watch.Elapsed);
 
             return encodedBlock;
         }
@@ -83,7 +84,7 @@ namespace Lab_3.Models.AlgorithmImplementations
             watch.Start();
 
             _inputFileHelper.OpenFile(fileName);
-            _outputFileHelper.OpenFile(fileName + "_decrypted");
+            _outputFileHelper.OpenFile(fileName + "_rc5-dec");
 
             ulong[] S = BuildExpandedKeyTable(key, numOfRounds);
             int bytesPerBlock = BytesPerBlock;
@@ -120,13 +121,16 @@ namespace Lab_3.Models.AlgorithmImplementations
             _inputFileHelper.CloseFile();
             _outputFileHelper.CloseFile();
 
-            var inputSec = _inputFileHelper.Watch.Elapsed.TotalSeconds;
-            var outputSec = _outputFileHelper.Watch.Elapsed.TotalSeconds;
-            var total = watch.Elapsed.TotalSeconds;
+            watch.Stop();   
 
-            var result = decodedBlock.Take(decodedBlock.Length - decodedBlock.Last()).ToArray();
+            _timeResult = watch.Elapsed - (_inputFileHelper.Watch.Elapsed + _outputFileHelper.Watch.Elapsed);
 
-            return result;
+            return bytesToDecode;
+        }
+
+        public TimeSpan GetTime()
+        {
+            return _timeResult;
         }
 
         #endregion implementations

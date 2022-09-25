@@ -181,9 +181,17 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Content="Encode" />
-            <Button Grid.Column="1" Content="Decode" />
+            <Button Grid.Column="0"
+                    Command="{Binding EncryptFileCommand}"
+                    Content="Encrypt" />
+            <Button Grid.Column="1"
+                    Command="{Binding DecryptRC5Command}"
+                    Content="Decrypt RC5" />
+            <Button Grid.Column="2"
+                    Command="{Binding DecryptRSACommand}"
+                    Content="Decrypt RSA" />
         </Grid>
 
         <GroupBox Grid.Row="2" Header="Time">
