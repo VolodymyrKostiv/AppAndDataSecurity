@@ -30,6 +30,7 @@ namespace Lab_4.ViewModels
         private RoundCount _numOfRounds;
         private int _bytesPerBlock = EncipherBlockSizeRSA;
         private RSACryptoServiceProvider _rsa;
+        private string _timeLogs = "";
 
         #endregion fields
 
@@ -37,6 +38,15 @@ namespace Lab_4.ViewModels
 
         public string InputFilePath { get; private set; }
         public string Password { get; set; } = "";
+        public string TimeLogs
+        {
+            get => _timeLogs;
+            set
+            {
+                _timeLogs = value;
+                NotifyPropertyChanged(nameof(TimeLogs));
+            }
+        }
 
         public KeyLength PasswordLength
         {
@@ -84,6 +94,10 @@ namespace Lab_4.ViewModels
 
         public HomeScreenViewModel(IChangeViewModel viewModelChanger) : base(viewModelChanger)
         {
+            PasswordLength = KeyLength.Bytes_16;
+            WordLength = WordType.Word_32;
+            NumOfRounds = RoundCount.Rounds_12;
+
             _rsa = new RSACryptoServiceProvider();
             EncryptFileCommand = new RelayCommand(EncryptFile);
             DecryptRC5Command = new RelayCommand(DecryptRC5File);
@@ -107,7 +121,7 @@ namespace Lab_4.ViewModels
                     RC5 rc5 = new RC5(WordLength);
                     var hashedKey = MD5Helper.GetMD5HashedKeyForRC5(Encoding.UTF8.GetBytes(Password), PasswordLength);
                     var decodedFileContent = await Task.Run(() => rc5.EncryptAsync(InputFilePath, (int)NumOfRounds, hashedKey));
-
+                    LogTime("Encrypt RC5", rc5.GetTime());
                     //----------------------------------------------------------------------------------------------------------------------------
 
                     InputFileHelper inputFileHelper = new InputFileHelper(InputFilePath);
@@ -121,34 +135,46 @@ namespace Lab_4.ViewModels
 
                     await Task.Run(() =>
                     {
-                        using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+                        try
                         {
-                            do
+                            using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
                             {
-                                bytesToEncode = inputFileHelper.ReadBlock(EncipherBlockSizeRSA);
-
-                                if (bytesToEncode.Length <= 0)
+                                do
                                 {
-                                    endOfFile = true;
-                                    break;
-                                }
+                                    bytesToEncode = inputFileHelper.ReadBlock(EncipherBlockSizeRSA);
 
-                                var encodedBlock = _rsa.Encrypt(bytesToEncode, false);
-                                outputFileHelper.Write(encodedBlock);
+                                    if (bytesToEncode.Length <= 0)
+                                    {
+                                        endOfFile = true;
+                                        break;
+                                    }
 
-                            } while (!endOfFile);
+                                    var encodedBlock = _rsa.Encrypt(bytesToEncode, false);
+                                    outputFileHelper.Write(encodedBlock);
+
+                                } while (!endOfFile);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                        finally
+                        {
+                            inputFileHelper.CloseFile();
+                            outputFileHelper.CloseFile();
                         }
                     });
 
-                    outputFileHelper.CloseFile();
-
                     stopwatch.Stop();
 
+                    var rsaTimespan = stopwatch.Elapsed - (inputFileHelper.Watch.Elapsed + outputFileHelper.Watch.Elapsed);
+                    LogTime("Encrypt RSA", rsaTimespan);
                     //----------------------------------------------------------------------------------------------------------------------------
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Pizda Encryptiony");
+                    MessageBox.Show(ex.Message, "Encryption died :(");
                 }
                 finally
                 {
@@ -168,10 +194,11 @@ namespace Lab_4.ViewModels
                     RC5 rc5 = new RC5(WordLength);
                     var hashedKey = MD5Helper.GetMD5HashedKeyForRC5(Encoding.UTF8.GetBytes(Password), PasswordLength);
                     var decodedFileContent = await Task.Run(() => rc5.DecryptAsync(InputFilePath, (int)NumOfRounds, hashedKey));
+                    LogTime("Decrypt RC5", rc5.GetTime());
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Pizda decryptiony");
+                    MessageBox.Show(ex.Message, "Decryption died :(");
                 }
                 finally
                 {
@@ -219,12 +246,14 @@ namespace Lab_4.ViewModels
                     });
 
                     outputFileHelper.CloseFile();
-
                     stopwatch.Stop();
+
+                    var rsaTimespan = stopwatch.Elapsed - (inputFileHelper.Watch.Elapsed + outputFileHelper.Watch.Elapsed);
+                    LogTime("Decrypt RSA", rsaTimespan);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "Pizda decryptiony");
+                    MessageBox.Show(ex.Message, "Decryption died :(");
                 }
                 finally
                 {
@@ -236,6 +265,11 @@ namespace Lab_4.ViewModels
         #endregion commands
 
         #region methods
+
+        private void LogTime(string target, TimeSpan span)
+        {
+            TimeLogs += string.Concat(target, ": ",span.ToString(), "\n"); 
+        }
 
         private bool ChooseFile()
         {

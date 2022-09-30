@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Lab_4.Helpers.FileHelpers
@@ -10,6 +11,12 @@ namespace Lab_4.Helpers.FileHelpers
         private FileStream _fileStream;
 
         #endregion fields
+
+        #region properties
+
+        public Stopwatch Watch { get; set; } = new Stopwatch();
+
+        #endregion properties
 
         #region constructors
 
@@ -29,6 +36,7 @@ namespace Lab_4.Helpers.FileHelpers
 
         public void Write(byte[] bytes)
         {
+            Watch.Start();
             try
             {
                 _fileStream.Write(bytes, 0, bytes.Length);
@@ -37,6 +45,7 @@ namespace Lab_4.Helpers.FileHelpers
             {
                 throw new Exception(ex.Message + "\nOutput stream died :(");
             }
+            Watch.Stop();
         }
 
         public void OpenFile(string fileName)

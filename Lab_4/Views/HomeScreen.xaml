@@ -37,9 +37,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-        <mahapps:ProgressRing IsActive="{Binding OperationActive}" />
-
         <GroupBox Grid.Row="0" Header="RC5 Parameters">
             <Grid IsEnabled="{Binding OperationActive, Converter={StaticResource boolToOppositeConverter}}">
                 <Grid.RowDefinitions>
@@ -177,7 +174,9 @@
             </Grid>
         </GroupBox>
 
-        <Grid Grid.Row="1" Margin="5">
+        <Grid Grid.Row="1"
+              Margin="5"
+              IsEnabled="{Binding OperationActive, Converter={StaticResource boolToOppositeConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
@@ -195,10 +194,18 @@
         </Grid>
 
         <GroupBox Grid.Row="2" Header="Time">
-            <TextBox Height="200"
-                     Margin="10"
-                     FontSize="20"
-                     Style="{StaticResource MahApps.Styles.TextBox.Button}" />
+            <Grid IsEnabled="{Binding OperationActive, Converter={StaticResource boolToOppositeConverter}}">
+                <TextBox Height="200"
+                         Margin="10"
+                         FontSize="20"
+                         Text="{Binding TimeLogs}"
+                         Style="{StaticResource MahApps.Styles.TextBox.Button}" />
+            </Grid>
         </GroupBox>
+
+        <mahapps:ProgressRing Grid.Row="0"
+                              Grid.RowSpan="3"
+                              IsActive="{Binding OperationActive}" />
+
     </Grid>
 </UserControl>

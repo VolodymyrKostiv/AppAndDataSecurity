@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace Lab_4.Helpers.FileHelpers
@@ -13,6 +14,12 @@ namespace Lab_4.Helpers.FileHelpers
         List<byte> bytes = new List<byte>();
 
         #endregion fields
+
+        #region properties
+
+        public Stopwatch Watch { get; set; } = new Stopwatch();
+
+        #endregion properties
 
         #region constructors
 
@@ -32,6 +39,8 @@ namespace Lab_4.Helpers.FileHelpers
 
         public byte[] ReadFile()
         {
+            Watch.Start();
+
             byte[] bytes = new byte[(int)_bufferedStream.Length];
             try
             {
@@ -41,12 +50,14 @@ namespace Lab_4.Helpers.FileHelpers
             {
                 throw new Exception(ex.Message + "\nInput stream died :(");
             }
+            Watch.Stop();
 
             return bytes;
         }
 
         public byte[] ReadBlock(int blockSize)
         {
+            Watch.Start();
             bytes.Clear();
             int tempByte = 0;
             try
@@ -75,6 +86,7 @@ namespace Lab_4.Helpers.FileHelpers
             {
                 throw new Exception(ex.Message + "\nInput stream died :(");
             }
+            Watch.Stop();
 
             return bytes.ToArray();
         }
