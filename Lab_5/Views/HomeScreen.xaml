@@ -1,0 +1,119 @@
+﻿<UserControl x:Class="Lab_5.Views.HomeScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="clr-namespace:CommonWPF.Converters;assembly=CommonWPF"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             d:DesignHeight="500"
+             d:DesignWidth="1200"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style BasedOn="{StaticResource MahApps.Styles.GroupBox}" TargetType="GroupBox">
+                <Setter Property="Margin" Value="10,5" />
+                <Setter Property="Padding" Value="8" />
+                <Setter Property="BorderThickness" Value="3" />
+            </Style>
+            <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
+                <Setter Property="Margin" Value="5,0" />
+                <Setter Property="FontSize" Value="20" />
+            </Style>
+            <Style BasedOn="{StaticResource MahApps.Styles.Label}" TargetType="Label">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+            <Style BasedOn="{StaticResource MahApps.Styles.TextBox}" TargetType="TextBox">
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="Margin" Value="10,0" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+            </Style>
+            <Style TargetType="Grid">
+                <Setter Property="Margin" Value="0" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0" Header="Input">
+            <Grid>
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="3*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0"
+                           Grid.Column="0"
+                           Content="Input:" />
+                    <TextBox Grid.Row="0" Grid.Column="1" />
+                    <Label Grid.Row="1"
+                           Grid.Column="0"
+                           Content="Result:" />
+                    <TextBox Grid.Row="1" Grid.Column="1" />
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Content="Read file"  />
+                    <Button Grid.Column="1" Content="Save to file" />
+                    <Button Grid.Column="2" Content="Create signature" />
+                </Grid>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Row="1" Header="File Check">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0"
+                           Grid.Column="0"
+                           Content="File signature:" />
+                    <TextBox Grid.Row="0" Grid.Column="1" />
+                    <Label Grid.Row="1"
+                           Grid.Column="0"
+                           Content="Signature from file:" />
+                    <TextBox Grid.Row="1" Grid.Column="1" />
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Content="Choose File" />
+                    <Button Grid.Column="1" Content="Choose Signature" />
+                </Grid>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>
