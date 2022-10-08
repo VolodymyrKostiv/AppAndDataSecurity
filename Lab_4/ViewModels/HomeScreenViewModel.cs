@@ -9,6 +9,8 @@ using Lab_4.Helpers.FileHelpers;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -125,7 +127,9 @@ namespace Lab_4.ViewModels
                     //----------------------------------------------------------------------------------------------------------------------------
 
                     InputFileHelper inputFileHelper = new InputFileHelper(InputFilePath);
-                    OutputFileHelper outputFileHelper = new OutputFileHelper(InputFilePath + "_rsa-enc");
+                    var outputFileName = Path.Combine(Path.GetDirectoryName(InputFilePath),
+                        string.Concat(Path.GetFileNameWithoutExtension(InputFilePath), "_rsa-enc", Path.GetExtension(InputFilePath)));
+                    OutputFileHelper outputFileHelper = new OutputFileHelper(outputFileName);
 
                     byte[] bytesToEncode = new byte[_bytesPerBlock];
                     bool endOfFile = false;
@@ -137,23 +141,25 @@ namespace Lab_4.ViewModels
                     {
                         try
                         {
-                            using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+                            var publicKey = _rsa.ExportParameters(true);
+                            var exportKeyPath = Path.Combine(Path.GetDirectoryName(InputFilePath),
+                            Path.GetFileNameWithoutExtension(InputFilePath) + ".xml");
+                            File.WriteAllText(exportKeyPath, _rsa.ToXmlString(includePrivateParameters: true));
+
+                            do
                             {
-                                do
+                                bytesToEncode = inputFileHelper.ReadBlock(EncipherBlockSizeRSA);
+
+                                if (bytesToEncode.Length <= 0)
                                 {
-                                    bytesToEncode = inputFileHelper.ReadBlock(EncipherBlockSizeRSA);
+                                    endOfFile = true;
+                                    break;
+                                }
 
-                                    if (bytesToEncode.Length <= 0)
-                                    {
-                                        endOfFile = true;
-                                        break;
-                                    }
+                                var encodedBlock = _rsa.Encrypt(bytesToEncode, false);
+                                outputFileHelper.Write(encodedBlock);
 
-                                    var encodedBlock = _rsa.Encrypt(bytesToEncode, false);
-                                    outputFileHelper.Write(encodedBlock);
-
-                                } while (!endOfFile);
-                            }
+                            } while (!endOfFile);
                         }
                         catch (Exception ex)
                         {
@@ -216,8 +222,10 @@ namespace Lab_4.ViewModels
                 try
                 {
                     InputFileHelper inputFileHelper = new InputFileHelper(InputFilePath);
-                    OutputFileHelper outputFileHelper = new OutputFileHelper(InputFilePath + "_rsa-dec");
+                    OutputFileHelper outputFileHelper = new OutputFileHelper(Path.Combine(Path.GetDirectoryName(InputFilePath),
+                        string.Concat(Path.GetFileNameWithoutExtension(InputFilePath), "_rsa-dec", Path.GetExtension(InputFilePath))));
 
+                    RSAParameters rSAParameters;
                     byte[] bytesToDecode = new byte[_bytesPerBlock];
                     bool endOfFile = false;
 
@@ -226,23 +234,24 @@ namespace Lab_4.ViewModels
 
                     await Task.Run(() =>
                     {
-                        using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider())
+                        if (ChooseFile())
                         {
-                            do
-                            {
-                                bytesToDecode = inputFileHelper.ReadBlock(DecipherBlockSizeRSA);
-
-                                if (bytesToDecode.Length <= 0)
-                                {
-                                    endOfFile = true;
-                                    break;
-                                }
-
-                                var decodedBlock = _rsa.Decrypt(bytesToDecode, false);
-                                outputFileHelper.Write(decodedBlock);
-
-                            } while (!endOfFile);
+                            _rsa.FromXmlString(File.ReadAllText(InputFilePath));
                         }
+
+                        do
+                        {
+                            bytesToDecode = inputFileHelper.ReadBlock(DecipherBlockSizeRSA);
+
+                            if (bytesToDecode.Length <= 0)
+                            {
+                                endOfFile = true;
+                                break;
+                            }
+                            var decodedBlock = _rsa.Decrypt(bytesToDecode, false);
+                            outputFileHelper.Write(decodedBlock);
+
+                        } while (!endOfFile);
                     });
 
                     outputFileHelper.CloseFile();
@@ -268,13 +277,11 @@ namespace Lab_4.ViewModels
 
         private void LogTime(string target, TimeSpan span)
         {
-            TimeLogs += string.Concat(target, ": ",span.ToString(), "\n"); 
+            TimeLogs += string.Concat(target, ": ", span.ToString(), "\n");
         }
 
         private bool ChooseFile()
         {
-            OperationActive = true;
-
             OpenFileDialog openFileDialog = new OpenFileDialog()
             {
                 Title = "Choose input file",
@@ -286,8 +293,6 @@ namespace Lab_4.ViewModels
                 InputFilePath = openFileDialog.FileName;
                 return true;
             }
-
-            OperationActive = false;
 
             return false;
         }

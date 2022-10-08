@@ -1,7 +1,6 @@
 ﻿<UserControl x:Class="Lab_5.Views.HomeScreen"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="clr-namespace:CommonWPF.Converters;assembly=CommonWPF"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -47,7 +46,7 @@
         </Grid.RowDefinitions>
         <GroupBox Grid.Row="0" Header="Input">
             <Grid>
-                <Grid.RowDefinitions >
+                <Grid.RowDefinitions>
                     <RowDefinition Height="3*" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
@@ -63,11 +62,16 @@
                     <Label Grid.Row="0"
                            Grid.Column="0"
                            Content="Input:" />
-                    <TextBox Grid.Row="0" Grid.Column="1" />
+                    <TextBox Grid.Row="0"
+                             Grid.Column="1"
+                             Text="{Binding InputText}" />
                     <Label Grid.Row="1"
                            Grid.Column="0"
                            Content="Result:" />
-                    <TextBox Grid.Row="1" Grid.Column="1" />
+                    <TextBox Grid.Row="1"
+                             Grid.Column="1"
+                             IsReadOnly="True"
+                             Text="{Binding Signature}" />
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
@@ -75,9 +79,15 @@
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Content="Read file"  />
-                    <Button Grid.Column="1" Content="Save to file" />
-                    <Button Grid.Column="2" Content="Create signature" />
+                    <Button Grid.Column="0"
+                            Command="{Binding CreateSignatureFromFileCommand}"
+                            Content="Create sign from file" />
+                    <Button Grid.Column="1"
+                            Command="{Binding SaveSignatureToFileCommand}"
+                            Content="Save to file" />
+                    <Button Grid.Column="2"
+                            Command="{Binding CreateSignatureFromInputCommand}"
+                            Content="Create signature" />
                 </Grid>
             </Grid>
         </GroupBox>
@@ -91,6 +101,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -98,22 +109,44 @@
                     </Grid.ColumnDefinitions>
                     <Label Grid.Row="0"
                            Grid.Column="0"
-                           Content="File signature:" />
-                    <TextBox Grid.Row="0" Grid.Column="1" />
+                           Content="File path:" />
+                    <TextBox Grid.Row="0"
+                             Grid.Column="1"
+                             Text="{Binding TextToCheckSignatureFilePath}" />
                     <Label Grid.Row="1"
                            Grid.Column="0"
-                           Content="Signature from file:" />
-                    <TextBox Grid.Row="1" Grid.Column="1" />
+                           Content="Signature path:" />
+                    <TextBox Grid.Row="1"
+                             Grid.Column="1"
+                             Text="{Binding SignatureFromFileFilePath}" />
+                    <Label Grid.Row="2"
+                           Grid.Column="0"
+                           Content="Result: " />
+                    <TextBox Grid.Row="2"
+                             Grid.Column="1"
+                             Text="{Binding VerificationResult}" />
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Content="Choose File" />
-                    <Button Grid.Column="1" Content="Choose Signature" />
+                    <Button Grid.Column="0"
+                            Command="{Binding ReadFileToVerifyCommand}"
+                            Content="Choose File" />
+                    <Button Grid.Column="1"
+                            Command="{Binding ReadSignatureFromFileToVerifyCommand}"
+                            Content="Choose Signature" />
+                    <Button Grid.Column="2"
+                            Command="{Binding VerifyFileSignatureCommand}"
+                            Content="Verify" />
                 </Grid>
             </Grid>
         </GroupBox>
+
+        <mahapps:ProgressRing Grid.Row="0"
+                              Grid.RowSpan="2"
+                              IsActive="{Binding OperationActive}" />
     </Grid>
 </UserControl>

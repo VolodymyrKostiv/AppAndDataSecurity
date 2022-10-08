@@ -139,9 +139,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helper\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\CommonWPF\CommonWPF.csproj">
       <Project>{8319eb50-f6be-4050-bdc5-d541a8e1df40}</Project>
