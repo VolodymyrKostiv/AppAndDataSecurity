@@ -142,9 +142,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\CommonWPF\CommonWPF.csproj">
       <Project>{8319EB50-F6BE-4050-BDC5-D541A8E1DF40}</Project>

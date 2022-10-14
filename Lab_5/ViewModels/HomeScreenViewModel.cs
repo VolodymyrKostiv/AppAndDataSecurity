@@ -14,7 +14,7 @@ namespace Lab_5.ViewModels
     {
         #region fields
 
-        private DSA _dsa;
+        private DSS _dss;
         private bool _operationActive;
         private string _inputText;
         private string _signature;
@@ -92,7 +92,7 @@ namespace Lab_5.ViewModels
 
         public HomeScreenViewModel(IChangeViewModel viewModelChanger) : base(viewModelChanger)
         {
-            _dsa = new DSA();
+            _dss = new DSS();
 
             Signature = InputText = TextToCheckSignatureFilePath = SignatureFromFileFilePath = VerificationResult = string.Empty;
 
@@ -102,6 +102,7 @@ namespace Lab_5.ViewModels
             SaveSignatureToFileCommand = new RelayCommand(SaveSignatureToFile);
             CreateSignatureFromInputCommand = new RelayCommand(CreateSignatureFromInput);
             VerifyFileSignatureCommand = new RelayCommand(VerifyFileSignature);
+            ImportDSSParametersCommand = new RelayCommand(ImportDSSParameters);
         }
 
         #endregion constructors
@@ -161,7 +162,7 @@ namespace Lab_5.ViewModels
                 if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
                 {
                     var text = File.ReadAllBytes(filePath);
-                    var result = _dsa.CreateSignature(text);
+                    var result = _dss.CreateSignature(text);
 
                     InputText = null;
                     Signature = result;
@@ -191,6 +192,18 @@ namespace Lab_5.ViewModels
                     }
 
                     File.WriteAllText(filePath, Signature);
+
+                    var exportKeyPath = Path.Combine(Path.GetDirectoryName(filePath),
+                        string.Concat(Path.GetFileNameWithoutExtension(filePath), "_private", ".xml"));
+                    if (File.Exists(exportKeyPath))
+                        File.Delete(exportKeyPath);
+                    File.WriteAllText(exportKeyPath, _dss.GetParameters(true));
+
+                    var exportKeyPathNoPrivate = Path.Combine(Path.GetDirectoryName(filePath),
+                        string.Concat(Path.GetFileNameWithoutExtension(filePath), "_NO_private", ".xml"));
+                    if (File.Exists(exportKeyPathNoPrivate))
+                        File.Delete(exportKeyPathNoPrivate);
+                    File.WriteAllText(exportKeyPathNoPrivate, _dss.GetParameters(false));
                 }
             }
             catch (Exception ex)
@@ -210,13 +223,28 @@ namespace Lab_5.ViewModels
             {
                 if (InputText != null)
                 {
-                    var result = _dsa.CreateSignature(InputText);
+                    var result = _dss.CreateSignature(InputText);
                     Signature = result;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+
+            EndOperation();
+        }
+
+        public ICommand ImportDSSParametersCommand { get; set; }
+        private async void ImportDSSParameters()
+        {
+            StartOperation();
+
+            var filePath = ChooseFile();
+            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+            {
+                string parameters = File.ReadAllText(filePath);
+                _dss.ImportParameters(parameters);
             }
 
             EndOperation();
@@ -232,7 +260,7 @@ namespace Lab_5.ViewModels
                     byte[] message = File.ReadAllBytes(TextToCheckSignatureFilePath);
                     string sign = File.ReadAllText(SignatureFromFileFilePath);
 
-                    bool result = _dsa.VerifySignature(message, Convert.FromBase64String(sign));
+                    bool result = _dss.VerifySignature(message, Convert.FromBase64String(sign));
                     if (result)
                     {
                         VerificationResult = "Verified";

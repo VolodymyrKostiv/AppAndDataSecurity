@@ -1,15 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Lab_5.Models
 {
-    internal class DSA
+    internal class DSS
     {
         private readonly DSACryptoServiceProvider _dsaService;
         private readonly SHA1 _sha1Service;
 
-        public DSA()
+        public DSS()
         {
             _dsaService = new DSACryptoServiceProvider();
             _sha1Service = SHA1.Create();
@@ -28,6 +29,8 @@ namespace Lab_5.Models
             {
                 byte[] hash = _sha1Service.ComputeHash(message);
                 byte[] signature = _dsaService.CreateSignature(hash);
+
+                var y = _dsaService.ToXmlString(true);
                 result = Convert.ToBase64String(signature);
             }
             catch (Exception ex)
@@ -37,6 +40,16 @@ namespace Lab_5.Models
             }
 
             return result;
+        }
+
+        public string GetParameters(bool includePrivate = true)
+        {
+            return _dsaService.ToXmlString(includePrivate);
+        }
+
+        public void ImportParameters(string parameters)
+        {
+            _dsaService.FromXmlString(parameters);
         }
 
         public bool VerifySignature(string message, string signature)

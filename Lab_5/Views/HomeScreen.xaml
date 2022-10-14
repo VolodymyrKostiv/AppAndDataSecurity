@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:l="clr-namespace:Lab_5.Converters"
              xmlns:mahapps="http://metro.mahapps.com/winfx/xaml/controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              d:DesignHeight="500"
@@ -37,6 +38,7 @@
             <Style TargetType="Grid">
                 <Setter Property="Margin" Value="0" />
             </Style>
+            <l:BoolToOppositeBoolConverter x:Key="boolToOppositeConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -44,7 +46,9 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <GroupBox Grid.Row="0" Header="Input">
+        <GroupBox Grid.Row="0"
+                  Header="Input"
+                  IsEnabled="{Binding OperationActive, Converter={StaticResource boolToOppositeConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="3*" />
@@ -91,7 +95,9 @@
                 </Grid>
             </Grid>
         </GroupBox>
-        <GroupBox Grid.Row="1" Header="File Check">
+        <GroupBox Grid.Row="1"
+                  Header="File Check"
+                  IsEnabled="{Binding OperationActive, Converter={StaticResource boolToOppositeConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="4*" />
@@ -131,6 +137,7 @@
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
                     <Button Grid.Column="0"
                             Command="{Binding ReadFileToVerifyCommand}"
@@ -139,6 +146,9 @@
                             Command="{Binding ReadSignatureFromFileToVerifyCommand}"
                             Content="Choose Signature" />
                     <Button Grid.Column="2"
+                            Command="{Binding ImportDSSParametersCommand}"
+                            Content="Choose Parameters" />
+                    <Button Grid.Column="3"
                             Command="{Binding VerifyFileSignatureCommand}"
                             Content="Verify" />
                 </Grid>
